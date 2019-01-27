@@ -28,6 +28,7 @@
 \usepackage{url}      % to include URLs
 \usepackage{fullpage} % use 1-inch margins
 \usepackage{amsmath}  % for creating equations
+\usepackage[font=footnotesize, labelfont=bf]{caption}  % create figure captions
 
 % create typewriter environment
 \newenvironment{allintypewriter}{\ttfamily}{\par}
@@ -43,44 +44,47 @@
 
 
 \section{Intro/Background}
-There is ever-growing interest in studying, understanding, and even predicting
+There is ever-growing interest in understanding and even predicting
 the genomic evolution of complex study systems. 
 These systems often feature one or multiple populations or species that are not
-at equilibrium, living on complex and even changing landscapes, undergoing
-both neutral and selective evolution, including natural selection on multiple
-traits simultaneously.
-The complex genomics of such systems are far beyond that which analytical
-population genetics can handle. The spatial context and non-neutral evolutionary
-dynamics of these systems makes them intractable for coalscent simulation.
+at equilibrium, that inhabit complex and even changing landscapes, and that are 
+undergoing both neutral evolution and natural selection (often on multiple traits).
 
+The complex genomics of such systems are beyond the reach of analytical
+population genetics. The spatial context and non-neutral evolutionary
+dynamics of these systems make them intractable for coalescent simulation.  
 Yet study systems such as these are ever more important for our understanding
-of evolutionary biology, environmental and conservation management, and the
+of evolutionary biology, environmental management and conservation, and the
 implications of climate change, urbanization, and other anthropogenic
 environmental changes.
+
 Modern population genetics has very few tools that can approach
-such systems in their full complexity; most simulation packages are lacking
+such systems in their full complexity. Most simulation packages are lacking
 at least one of numerous important features---selection on an arbitrary traits
 with complex genomic architectures, realistic recombination,
 realistic movement in a spatially explicit environment,
 environmental and demographic change 
-{\large cite SimAdapt, cdpop, etc}---and what few tools approach
-this level of complexity have an very high cost of admission
-(such as considerable programming skill, and even ithe requirement
-that the user to learn a novel, home-brewed programming language
-{\large cite Messer, SLiM}). 
+{\large cite SimAdapt, cdpop, quantiNemo, etc}---and the few tools that approach
+this level of complexity have a very high cost of admission
+(e.g.\ considerable programming skill, or even ithe requirement
+that the user to learn a new, custom-made programming language
+{\large cite Messer: SLiM}). 
 
-Additionally, empirical studies often use sophisticated methods
-to make inferences about the evolutionary history, meaning, and
-even future of wild populations (e.g.\ adaptive potential
+Additionally, empirical studies often use sophisticated statistical methods
+to make inferences or predictions about the evolutionary history,
+dynamics, or future of wild populations (e.g.\ adaptive potential
 {\large cite VARIOUS STUDIES HERE}; genomic vulnerability index
-{\large citeYELLOW WARBLER STUDY}), but we have no evolutionary
-null model for such study systems, and thus a limited understanding
-of their neutral genomic expectations and their likely Type-II error rates.
+{\large citeYELLOW WARBLER STUDY}). Yet we have no well established evolutionary
+null model, and thus a limited understanding of the neutral genomic expectations
+and Type-II error rates of genomic outlier tests in such systems. Adequately
+complex simulations can help calibrate statistical analyses in these cases.
 
-There is a clear need for a broad-purpose, flexible landscape-genomic
-simulation package, hosted in a common scripting language,
-that requires minimal programming knowledge,
-yet offers the advanced user considerable customizability.
+Thus there is clear need for broad-purpose, flexible software for
+landscape-genomic simulation.
+Such software should be hosted in a
+popular scripting language, and should allow the user to build complex
+models with minimal programming expertise, but it should offer deep
+customizability to the advanced user.
 Geonomics aims to meet this need.
 
 
@@ -120,7 +124,7 @@ and finishing at pre-determined timesteps, and proceeding stepwiseat between the
 at pre-determined intervals).
 
 A model can be run for any number of timesteps. Each timestep has a fixed schedule
-of operations, which are depicted in fig. X. The timestep starts by updating the
+of operations, which are depicted in fig. 1. The timestep starts by updating the
 model's timestep counter, updating all individuals' ages, and updating each species'
 population-size record. Then each species, if it is not sessile, undergoes movement. 
 
@@ -141,7 +145,7 @@ to the species' intrinsic birth rate), and for each mating pair a number of offs
 is chosen (from a Poisson distribution with lambda equal to the species' mean number
 of offspring). Each offspring is dispersed to a new location; as with movement, dispersal
 is in continuous space, with direction drawn either isotropically or
-anisotropically). And if the species uses genomes, then each offspring has a new genome
+anisotropically. And if the species uses genomes, then each offspring has a new genome
 assigned to it, which is the fusion of two gametes, one from each parent, which are
 generated according to Mendelian principles and with realistic recombination (according
 to the array of recombination rates in the species' genomic architecture).
@@ -184,7 +188,7 @@ Geonomics is designed to allow the creation of complex, highly customizable
 landscape-genomic simulation models with a minimal amount of programming work or even
 programming experience.
 After launching Python and loading the package (\texttt{>>> import geonomics as gnx}),
-for the simplest use-case (see fig. X), the user need only:
+for the simplest use-case (see fig. 1), the user need only:
 \begin{enumerate}
         \item execute a command to create a template parameters file (`gnx.make\_parameters\_file(\ldots)`), feeding in the necssary arguments (see the command's documentation for details);
         \item edit the parameters file as desired;
@@ -192,7 +196,11 @@ for the simplest use-case (see fig. X), the user need only:
         \item execute a command to run the model to completion (`mod.run(\ldots)`).
 \end{enumerate}
 
+% fig 1
+\begin{figure}[h!]
 \includegraphics[width=125mm]{./img/flow_diagram.png}
+\caption{Geonomics flow diagram}
+\end{figure}
 
 In more complicated use-cases, the user may wish to use the `mod.walk(\ldots)`
 command to run the model for a limited number of timesteps,
@@ -206,7 +214,7 @@ This means that the core data structures with which the user will interface
 are objects belonging to classes defined by Geonomics.
 The following paragraphs provide a brief review of the major and minor classes, including
 what data they contain and what they do. (For full details, see the Geonomics
-documentation: \url{www.GEONOMICS\_WESBITE\_HERE.com}.)
+documentation: \url{http://htmlpreview.github.io/?https://github.com/drewhart/geonomics\_docs/blob/master/built/doc.html}.)
 
 
 \subsection{\texttt{Model}}
@@ -427,7 +435,7 @@ population sizes. For each mean population size (calculated as the harmonic mean
 to account for stochastic fluctations around the carrying capacity), I compared
 the mean persistence time to that
 expected by theory, according to the formula cited in the previous paragraph. As can be
-seen in fig. X, the results compare favorably to theory, although the observed
+seen in figures 2 and 3, the results compare favorably to theory, although the observed
 mean persistence time undershoots the expected at all population sizes because of a variety
 of artefacts of the approximation. Despite the movement, dispersal, and mating-radius
 parameterizations, the simulated populations will still exhibit some neighborhood-mating
@@ -446,9 +454,17 @@ of loci. Thus, overall, Geonomics demonstrates realistic Wright-Fisher-type drif
 persistence times characteristic of a population whose effective size undershoots its
 mean size.
 
-\includegraphics[width=125mm]{./img/validation/wf/allele_trajectories.png}
+% fig 2
+\begin{figure}[h!]
+\includegraphics[width=175mm]{./img/validation/wf/allele_trajectories.png}
+        \caption{Wright-Fisher test: allele-frequency trajectories}
+\end{figure}
 
-\includegraphics[width=125mm]{./img/validation/wf/pop_size_vs_K_factor_and_mean_persist_t_vs_pop_size.png}
+% fig 3
+\begin{figure}[h!]
+\includegraphics[width=175mm]{./img/validation/wf/pop_size_vs_K_factor_and_mean_persist_t_vs_pop_size.png}
+        \caption{Wright-Fisher test: left: mean population size as a function of 'K\_factor' (multiplicative factor determining a species' spatialized carrying capacity and thus equilibrium population size; right: mean persistence time for segregating sites as a function of mean population size}
+\end{figure}
 
 
 \subsection{Bottleneck test: population dynamics}
@@ -474,12 +490,16 @@ then returned to its initial value for the remainder of the simulation
 see \texttt{bottleneck\_params.py} for specifics.)
 
 
-Figure X shows a clear signal of drift acceleration during the bottleneck event.
+Figure 4 shows a clear signal of drift acceleration during the bottleneck event.
 
-\includegraphics[width=125mm]{./img/validation/bottleneck/alleles_seem_to_take_too_long_to_fix.png}
+% fig 4
+\begin{figure}[h!]
+\includegraphics[width=175mm]{./img/validation/bottleneck/alleles_seem_to_take_too_long_to_fix.png}
+        \caption{Bottleneck test: 1-allele frequencies (top) and population size (bottom) as a function of time}
+\end{figure}
 
 
-\subsection{stepping-stone test: population subdivision and genetic differentiation}
+\subsection{Stepping-stone test: population subdivision and genetic differentiation}
 The stepping-stone model, or one-dimensional island model, is a spatially implicit model.
 It models a series of subpopulations, arranged along a straight line,
 with migration between all neighboring pairs. (I chose to validate Geonomics using
@@ -517,11 +537,11 @@ express portions of its continuous Landscape, I manually tracked the number of
 migration events during each timestep, for all possible directional migration events 
 (i.e.\ for all permutations of two islands). I used that data to solve the equation cited in the previous paragraph, and compared the resulting $F_{ST}$ expectations to the observed
 values (calculated from the simulated date using two common methods;
-see fig. X for details).
+see fig. 7 for details).
 
-Results demonstrate that the model has approached reached migration-drift equilibrium,
-and that all island populations were at dynamic equilibria around the
-same mean size (fig. X). Estimated migration rates and $F_{ST}$ values qualitatively
+Results demonstrate that the model has approached reached migration-drift equilibrium
+(fig. 5), and that all island populations were at dynamic equilibria around the
+same mean size (fig. 6). Estimated migration rates and $F_{ST}$ values qualitatively
 match theoretical expectations: islands greater than one step apart drop off 
 precipitously and then continually decrease in mean migration rate,
 and genetic differentiation increases toward a saturating level of $F_{ST}$.
@@ -530,11 +550,23 @@ migration rates, however, likely because the subpopulations have yet to approach
 at most loci (i.e.\ the overall population has approached but still not reached
 migration-drift equilibrium).
 
-\includegraphics[width=125mm]{./img/validation/stepping_stone/Fst_over_time_vs_interisland_dist.png}
+% fig 5
+\begin{figure}[h!]
+\includegraphics[width=175mm]{./img/validation/stepping_stone/Fst_over_time_vs_interisland_dist.png}
+        \caption{Stepping-stone test: $F_{ST}$ as a function of model time, across increasing inter-island distances (gradually darker shades of blue)}
+\end{figure}
 
-\includegraphics[width=125mm]{./img/validation/stepping_stone/pop_size_over_time.png}
+% fig 6
+\begin{figure}[h!]
+\includegraphics[width=175mm]{./img/validation/stepping_stone/pop_size_over_time.png}
+\caption{Stepping-stone test: Population size as a function of time, for all 6 islands' populations}
+\end{figure}
 
-\includegraphics[width=125mm]{./img/validation/stepping_stone/pop_plot_and_Fst_and_mig_rate_plot.png}
+% fig 7
+\begin{figure}[h!]
+\includegraphics[width=175mm]{./img/validation/stepping_stone/pop_plot_and_Fst_and_mig_rate_plot.png}
+        \caption{Stepping-stone test: left: Map of all 6 islands' populations at the end of the simulation; right: pairwise $F_{ST}$ (left y-axis; calculated by 3 different formulae) and inter-island migration rate (right y-axis) as a function of inter-island distance}
+\end{figure}
 
 
 \subsection{Contrasting-habitat test: adaptive divergence}
@@ -581,12 +613,18 @@ I tracked the number of migration events during each timestep and used that
 data to solve the equation cited in the previous paragraph.
 
 Results depict clear local adaptation to each of the two halves of the landscape,
-with opposite-phenotype bleedover and heterozygote births occuring mainly along the border between the two habitats (fig. X, right side). Allele trajectories in each half of the
+with opposite-phenotype bleedover and heterozygote births occuring mainly along
+the border between the two habitats (fig. 8, right).
+Allele trajectories in each half of the
 environment follow qualitatively the increasing and saturating trajectories expected by
-theory, but reach consistently more extreme allele frequencies than expected (fig. X,
-left side). This is likely because of WHAT?
+theory, but reach consistently more extreme allele frequencies than expected (fig. 8,
+left). This is likely because of WHAT?
 
-\includegraphics[width=125mm]{./img/validation/divergence/divergence_test_ca1400_individuals_1000_timesteps.png}
+% fig 8
+\begin{figure}[h!]
+\includegraphics[width=175mm]{./img/validation/divergence/divergence_test_ca1400_individuals_1000_timesteps.png}
+        \caption{Contrasting-habitat test: left: Observed (markers) versus predicted (lines) allele-frequency trajectories for two contrasting habitats (blue = 0.0-valued; white = 1.0-valued), across three selection coefficients ($\phi$ = 0.01: stars; 0.05: crosses; 0.10: circles); right: map of the population after spatially divergent selection at $\phi$ = 0.10, with individuals, colored by phenotype (outer circles) and fitness (inner circles), plotted on top of the selective landscape layer (horizontally divided into white and blue halves)}
+\end{figure}
 
 
 \subsection{Cline test: local adaptation}
@@ -636,16 +674,20 @@ function in Python's \texttt{scipy} package to fit \emph{tanh} clines to all loc
 I plotted all fitted clines on top of the first landscape layer, with the cline
 for the one selective locus highlighted.
 The selective locus consistently and clearly stands out as the only locus with a cline
-matching the expectation (i.e.\ mirroring the environmental gradient; fig. X, left),
+matching the expectation (i.e.\ mirroring the environmental gradient; fig. 9, left),
 and results show an obviously locally adapted population, with a zone of hybridization
-and phenotypic spillover surround the clinal center (fig. X, right).
+and phenotypic spillover surround the clinal center (fig. 9, right).
 Furthermore, for a family of regression models of environmental value on genotype
 for all loci, after correction for multiple testing, the selective locus consistently
 stands out as the most significantly correlated locus (though numerous other loci
 also give false-positive results, albeit with considerably larger p-values). SHOW
 THESE RESULTS!
 
-\includegraphics[width=125mm]{./img/validation/cline/cline_adaptation_phi_0pt01_2500_timesteps.png}
+% fig 9
+\begin{figure}[h!]
+\includegraphics[width=175mm]{./img/validation/cline/cline_adaptation_phi_0pt01_2500_timesteps.png}
+        \caption{Cline test: left: plot of allele-frequency clines (neutral loci in black, selective locus in bold red) against the selective landscape layer (horizontal gradient from blue to white); right: map of the final population on top of the selective lanscape layer, with individuals colored by phenotype (out circles) and fitness (inner circles)}
+\end{figure}
 
 
 \subsection{Selective sweep test: genetic hitchhiking}
@@ -692,22 +734,26 @@ at three points during the model.
 
 Geonomics very realistically emulated the behavior of a selective sweep. The
 adaptive phenotype (the '1'|'1' genotype, plotted as white
-on a white environmental background; in fig. X, top row) clearly
+on a white environmental background; in fig. 10, top row) clearly
 emerges in a region surrounding the mutation's origin, then spreads rapidly
 throughout the population from there. The population's mean fitness increases
 quickly from 0.85 (the universal fitness value before the mutation is
 introduced) to 1.00 (the universal fitness value after the sweep is complete;
-fig. X, bottom row, leftmost plot). And there is a clear region of depressed
+fig. 10, bottom row, leftmost plot). And there is a clear region of depressed
 nucleotide diversity immediately around the selective locus, which becomes
 more pronounced once the sweep goes toward completion, then slowly erodes
 over further time as a result of recombination of the mutant haplotype's
-alleles onto non-mutant backgrounds (fig. X, bottom row, second, third, and
+alleles onto non-mutant backgrounds (fig. 10, bottom row, second, third, and
 fourth plots from the left).
 
-\includegraphics[width=125mm]{./img/validation/sweep/sweep_results.png}
+% fig 10
+\begin{figure}[h!]
+\includegraphics[width=175mm]{./img/validation/sweep/sweep_results.png}
+        \caption{Selective sweep test: top row: Maps of population (colored by phenotype) at various points in model time (from left to right: timestep 0, timestep 200, after completion of sweep, and 2500 timesteps after completion of sweep); bottom row: mean fitness as a function of model time (first plot on left) and genome-wide nucleotide diversity at timestep 200, immediately after completion of sweep, and 2500 timesteps after completion of sweep (second, third, and fourth plots from left)}
+\end{figure}
 
 
-\section{Example use-case}
+\section{Example use-case: Polygenic adaptation to climate change in the Yosemite region}
 
 Perhaps Genomics' use-value is best demonstrated by way of a worked example.
 In this section, I explain a complex evolutionary scenario for which 
@@ -769,12 +815,12 @@ genomes with 1 trait; and with data-collection.
 The command to do this was:
 
 \begin{allintypewriter}
->>> gnx.make\_parameters\_file\(filepath=`yosemite\_params.py',
-                             layers=[\{`type': `file', `change': True\},
-                                     \{`type': `file', `change': True\}],
-                             species=[\{`movement': True, `movement\_surface': True,
-                                       `genomes': True, `n\_traits': 1\}],
-                             data=True\)
+>>> gnx.make\_parameters\_file(filepath=`yosemite\_params.py',\\
+                               layers=[\{`type': `file', `change': True\},\\
+                                       \{`type': `file', `change': True\}],\\
+                               species=[\{`movement': True, `movement\_surface': True,\\
+                                          `genomes': True, `n\_traits': 1\}],\\
+                               data=True)\\
 \end{allintypewriter}
 
 After running this command, I opened the resulting, auto-generated parameters
@@ -802,10 +848,14 @@ the elevation-based temperature gradient in the Yosemite region, and that
 gradient of local adpatation exhibits a pronounced upslope shift in response to
 the period of climate change. These results are visible both heuristically
 (from the individuals' phenotypes plotted across the three discrete timesteps'
-columns in fig. X) and analytically (from the neighborhood-meaned phenotype
-rasters plotted across fig. X, row 3).
+columns in fig. 11) and analytically (from the neighborhood-meaned phenotype
+rasters plotted across fig. 11, row 3).
 
-\includegraphics[width=125mm]{./img/example/yosemite_results.png}
+% fig 11
+\begin{figure}[h!]
+\includegraphics[width=175mm]{./img/example/yosemite_results.png}
+        \caption{Temperature rasters (top row), habitat rasters (middle row), rasters of neighborhood-meaned phenotype (bottom row) at timesteps 0 (left column), 500 (before beginning of climate change; center column), and 1500 (after climate change; right column) for a species with a 100-gene trait adapted to temperature}
+\end{figure}
 
 
 \section{Getting started}
@@ -821,7 +871,7 @@ where it is actively maintained and developed.
 
 Documentation is extensive (and continues to expand as new worked examples
 are offered and new functionality is added to the package), and is available
-online at \url{URL_HERE}.  
+online at \url{http://htmlpreview.github.io/?https://github.com/drewhart/geonomics\_docs/blob/master/built/doc.html}.  
 The simplest and advanced use cases are explained above (see section
 \emph{Design, structure, and function}), as well as in the documentation.
 The documentation provides a detailed section explaining the meaning,
