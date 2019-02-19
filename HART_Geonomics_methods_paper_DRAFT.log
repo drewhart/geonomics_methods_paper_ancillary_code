@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018/Arch Linux) (preloaded format=pdflatex 2019.2.10)  12 FEB 2019 10:19
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018/Arch Linux) (preloaded format=pdflatex 2019.2.10)  18 FEB 2019 22:16
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -225,38 +225,37 @@ rol.cancer.gov/gsr/search/?\OT1/cmr/m/n/10 .
 
 [1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2] [3] [4] [5] [6]
-[7] [8] [9] [10]
-LaTeX Font Info:    Try loading font information for OMS+cmtt on input line 713
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2] [3] [4]
+Overfull \hbox (2.02365pt too wide) in paragraph at lines 285--292
+[]\OT1/cmr/m/n/10 All re-sults are as ex-pected, demon-strat-ing a ro-bust abil
+-ity to re-pro-duce population-genetic and population-
+ []
+
+[5] [6] [7] [8] [9]
+LaTeX Font Info:    Try loading font information for OMS+cmtt on input line 676
 .
  (/usr/share/texmf/tex/latex/omscmtt.fd
 File: omscmtt.fd 
 )
 LaTeX Font Info:    Font shape `OMS/cmtt/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 713.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 676.
 
-Underfull \hbox (badness 10000) in paragraph at lines 712--718
+Underfull \hbox (badness 10000) in paragraph at lines 675--681
 
  []
 
 
-Overfull \hbox (4.05151pt too wide) in paragraph at lines 720--732
-[]\OT1/cmr/m/n/10 After run-ning this com-mand, I opened the re-sult-ing, auto-
-generated pa-ram-e-ters file (\OT1/cmtt/m/n/10 yosemite[]params.py\OT1/cmr/m/n/
-10 )
+Overfull \hbox (11.83038pt too wide) in paragraph at lines 683--697
+[]\OT1/cmr/m/n/10 After run-ning this com-mand, we opened the re-sult-ing, auto
+-generated pa-ram-e-ters file (\OT1/cmtt/m/n/10 yosemite[]params.py\OT1/cmr/m/n
+/10 )
  []
 
-
-Overfull \hbox (62.4727pt too wide) in paragraph at lines 733--739
-[]\OT1/cmr/m/n/10 Finally, I wrote a short script to cre-ate a model from the p
-a-ram-e-ters (`mod = gnx.make[]model('./yosemite[]params.py')`),
- []
-
-[11]
+[10] [11]
 <./img/flow_diagram.png, id=50, 614.295pt x 794.97pt>
 File: ./img/flow_diagram.png Graphic file (type png)
 <use ./img/flow_diagram.png>
-Package pdftex.def Info: ./img/flow_diagram.png  used on input line 796.
+Package pdftex.def Info: ./img/flow_diagram.png  used on input line 818.
 (pdftex.def)             Requested size: 355.65944pt x 460.2702pt.
 
 
@@ -266,10 +265,10 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 File: ./img/validation/wf/allele_trajectories.png Graphic file (type png)
 <use ./img/validation/wf/allele_trajectories.png>
 Package pdftex.def Info: ./img/validation/wf/allele_trajectories.png  used on i
-nput line 803.
+nput line 825.
 (pdftex.def)             Requested size: 497.92322pt x 256.74037pt.
 
-Overfull \hbox (28.1682pt too wide) in paragraph at lines 803--804
+Overfull \hbox (28.1682pt too wide) in paragraph at lines 825--826
 [][] 
  []
 
@@ -283,10 +282,10 @@ ng Graphic file (type png)
 <use ./img/validation/wf/pop_size_vs_K_factor_and_mean_persist_t_vs_pop_size.pn
 g>
 Package pdftex.def Info: ./img/validation/wf/pop_size_vs_K_factor_and_mean_pers
-ist_t_vs_pop_size.png  used on input line 810.
+ist_t_vs_pop_size.png  used on input line 832.
 (pdftex.def)             Requested size: 497.92322pt x 256.74037pt.
 
-Overfull \hbox (28.1682pt too wide) in paragraph at lines 810--811
+Overfull \hbox (28.1682pt too wide) in paragraph at lines 832--833
 [][] 
  []
 
@@ -299,10 +298,10 @@ File: ./img/validation/bottleneck/alleles_seem_to_take_too_long_to_fix.png Grap
 hic file (type png)
 <use ./img/validation/bottleneck/alleles_seem_to_take_too_long_to_fix.png>
 Package pdftex.def Info: ./img/validation/bottleneck/alleles_seem_to_take_too_l
-ong_to_fix.png  used on input line 817.
+ong_to_fix.png  used on input line 839.
 (pdftex.def)             Requested size: 497.92322pt x 256.74037pt.
 
-Overfull \hbox (28.1682pt too wide) in paragraph at lines 817--818
+Overfull \hbox (28.1682pt too wide) in paragraph at lines 839--840
 [][] 
  []
 
@@ -315,10 +314,10 @@ File: ./img/validation/stepping_stone/Fst_over_time_vs_interisland_dist.png Gra
 phic file (type png)
 <use ./img/validation/stepping_stone/Fst_over_time_vs_interisland_dist.png>
 Package pdftex.def Info: ./img/validation/stepping_stone/Fst_over_time_vs_inter
-island_dist.png  used on input line 824.
+island_dist.png  used on input line 846.
 (pdftex.def)             Requested size: 497.92322pt x 256.74037pt.
 
-Overfull \hbox (28.1682pt too wide) in paragraph at lines 824--825
+Overfull \hbox (28.1682pt too wide) in paragraph at lines 846--847
 [][] 
  []
 
@@ -331,10 +330,10 @@ File: ./img/validation/stepping_stone/pop_size_over_time.png Graphic file (type
  png)
 <use ./img/validation/stepping_stone/pop_size_over_time.png>
 Package pdftex.def Info: ./img/validation/stepping_stone/pop_size_over_time.png
-  used on input line 831.
+  used on input line 853.
 (pdftex.def)             Requested size: 497.92322pt x 256.74037pt.
 
-Overfull \hbox (28.1682pt too wide) in paragraph at lines 831--832
+Overfull \hbox (28.1682pt too wide) in paragraph at lines 853--854
 [][] 
  []
 
@@ -347,10 +346,10 @@ File: ./img/validation/stepping_stone/pop_plot_and_Fst_and_mig_rate_plot.png Gr
 aphic file (type png)
 <use ./img/validation/stepping_stone/pop_plot_and_Fst_and_mig_rate_plot.png>
 Package pdftex.def Info: ./img/validation/stepping_stone/pop_plot_and_Fst_and_m
-ig_rate_plot.png  used on input line 838.
+ig_rate_plot.png  used on input line 860.
 (pdftex.def)             Requested size: 497.92322pt x 256.74037pt.
 
-Overfull \hbox (28.1682pt too wide) in paragraph at lines 838--839
+Overfull \hbox (28.1682pt too wide) in paragraph at lines 860--861
 [][] 
  []
 
@@ -364,10 +363,10 @@ teps.png Graphic file (type png)
 <use ./img/validation/divergence/divergence_test_ca1400_individuals_1000_timest
 eps.png>
 Package pdftex.def Info: ./img/validation/divergence/divergence_test_ca1400_ind
-ividuals_1000_timesteps.png  used on input line 845.
+ividuals_1000_timesteps.png  used on input line 867.
 (pdftex.def)             Requested size: 497.92322pt x 256.74037pt.
 
-Overfull \hbox (28.1682pt too wide) in paragraph at lines 845--846
+Overfull \hbox (28.1682pt too wide) in paragraph at lines 867--868
 [][] 
  []
 
@@ -380,10 +379,10 @@ File: ./img/validation/cline/cline_adaptation_phi_0pt01_2500_timesteps.png Grap
 hic file (type png)
 <use ./img/validation/cline/cline_adaptation_phi_0pt01_2500_timesteps.png>
 Package pdftex.def Info: ./img/validation/cline/cline_adaptation_phi_0pt01_2500
-_timesteps.png  used on input line 852.
+_timesteps.png  used on input line 874.
 (pdftex.def)             Requested size: 497.92322pt x 256.74037pt.
 
-Overfull \hbox (28.1682pt too wide) in paragraph at lines 852--853
+Overfull \hbox (28.1682pt too wide) in paragraph at lines 874--875
 [][] 
  []
 
@@ -394,10 +393,10 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 File: ./img/validation/sweep/sweep_results.png Graphic file (type png)
 <use ./img/validation/sweep/sweep_results.png>
 Package pdftex.def Info: ./img/validation/sweep/sweep_results.png  used on inpu
-t line 859.
+t line 881.
 (pdftex.def)             Requested size: 497.92322pt x 256.74037pt.
 
-Overfull \hbox (28.1682pt too wide) in paragraph at lines 859--860
+Overfull \hbox (28.1682pt too wide) in paragraph at lines 881--882
 [][] 
  []
 
@@ -408,10 +407,10 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 File: ./img/validation/PCA/PCA_plot.png Graphic file (type png)
 <use ./img/validation/PCA/PCA_plot.png>
 Package pdftex.def Info: ./img/validation/PCA/PCA_plot.png  used on input line 
-866.
+888.
 (pdftex.def)             Requested size: 497.92322pt x 256.74037pt.
 
-Overfull \hbox (28.1682pt too wide) in paragraph at lines 866--867
+Overfull \hbox (28.1682pt too wide) in paragraph at lines 888--889
 [][] 
  []
 
@@ -422,10 +421,10 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 File: ./img/validation/two-trait/two-trait_plot.png Graphic file (type png)
 <use ./img/validation/two-trait/two-trait_plot.png>
 Package pdftex.def Info: ./img/validation/two-trait/two-trait_plot.png  used on
- input line 873.
+ input line 895.
 (pdftex.def)             Requested size: 497.92322pt x 256.74037pt.
 
-Overfull \hbox (28.1682pt too wide) in paragraph at lines 873--874
+Overfull \hbox (28.1682pt too wide) in paragraph at lines 895--896
 [][] 
  []
 
@@ -438,10 +437,10 @@ File: ./img/validation/two-trait/two-trait_plot_LINKED.png Graphic file (type p
 ng)
 <use ./img/validation/two-trait/two-trait_plot_LINKED.png>
 Package pdftex.def Info: ./img/validation/two-trait/two-trait_plot_LINKED.png  
-used on input line 880.
+used on input line 902.
 (pdftex.def)             Requested size: 497.92322pt x 256.74037pt.
 
-Overfull \hbox (28.1682pt too wide) in paragraph at lines 880--881
+Overfull \hbox (28.1682pt too wide) in paragraph at lines 902--903
 [][] 
  []
 
@@ -452,10 +451,10 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 File: ./img/example/yosemite_results.png Graphic file (type png)
 <use ./img/example/yosemite_results.png>
 Package pdftex.def Info: ./img/example/yosemite_results.png  used on input line
- 887.
+ 909.
 (pdftex.def)             Requested size: 497.92322pt x 256.74037pt.
 
-Overfull \hbox (28.1682pt too wide) in paragraph at lines 887--888
+Overfull \hbox (28.1682pt too wide) in paragraph at lines 909--910
 [][] 
  []
 
@@ -475,10 +474,10 @@ ation/two-trait/two-trait_plot.png> <./img/validation/two-trait/two-trait_plot_
 linked.png>] [20 <./img/example/yosemite_results.png>]
 (./HART_Geonomics_methods_paper_DRAFT.aux) ) 
 Here is how much of TeX's memory you used:
- 3353 strings out of 492639
- 52700 string characters out of 6135497
- 121974 words of memory out of 5000000
- 7189 multiletter control sequences out of 15000+600000
+ 3352 strings out of 492639
+ 52684 string characters out of 6135497
+ 122974 words of memory out of 5000000
+ 7188 multiletter control sequences out of 15000+600000
  9538 words of font info for 35 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  41i,17n,39p,681b,327s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -498,7 +497,7 @@ share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texmf-dis
 t/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texmf-dist/fonts/type1/p
 ublic/amsfonts/cm/cmti10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts
 /cm/cmtt10.pfb>
-Output written on HART_Geonomics_methods_paper_DRAFT.pdf (20 pages, 6640901 byt
+Output written on HART_Geonomics_methods_paper_DRAFT.pdf (20 pages, 6642057 byt
 es).
 PDF statistics:
  171 PDF objects out of 1000 (max. 8388607)
