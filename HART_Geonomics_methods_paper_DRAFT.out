@@ -1,0 +1,24 @@
+\BOOKMARK [1][-]{section.1}{Abstract}{}% 1
+\BOOKMARK [1][-]{section.2}{Intro/Background}{}% 2
+\BOOKMARK [1][-]{section.3}{Model overview}{}% 3
+\BOOKMARK [2][-]{subsection.3.1}{Components}{section.3}% 4
+\BOOKMARK [3][-]{subsubsection.3.1.1}{Species}{subsection.3.1}% 5
+\BOOKMARK [3][-]{subsubsection.3.1.2}{Landscape}{subsection.3.1}% 6
+\BOOKMARK [2][-]{subsection.3.2}{Operations}{section.3}% 7
+\BOOKMARK [1][-]{section.4}{Validations tests}{}% 8
+\BOOKMARK [1][-]{section.5}{Validations tests OLD}{}% 9
+\BOOKMARK [2][-]{subsection.5.1}{Wright-Fisher test: genetic drift}{section.5}% 10
+\BOOKMARK [2][-]{subsection.5.2}{Bottleneck test: population dynamics}{section.5}% 11
+\BOOKMARK [2][-]{subsection.5.3}{Stepping-stone test: population subdivision and genetic differentiation}{section.5}% 12
+\BOOKMARK [2][-]{subsection.5.4}{Contrasting-habitat test: adaptive divergence}{section.5}% 13
+\BOOKMARK [2][-]{subsection.5.5}{Cline test: local adaptation}{section.5}% 14
+\BOOKMARK [2][-]{subsection.5.6}{Selective sweep test: genetic hitchhiking}{section.5}% 15
+\BOOKMARK [2][-]{subsection.5.7}{PCA test: isolation by resistance}{section.5}% 16
+\BOOKMARK [2][-]{subsection.5.8}{simultaneous-selection test: selection on multiple traits}{section.5}% 17
+\BOOKMARK [1][-]{section.6}{Example use-case: Polygenic adaptation to climate change in the Yosemite region}{}% 18
+\BOOKMARK [1][-]{section.7}{Example use-case: Polygenic adaptation to climate change in the Yosemite region OLD}{}% 19
+\BOOKMARK [1][-]{section.8}{Caveats and considerations}{}% 20
+\BOOKMARK [1][-]{section.9}{Getting started}{}% 21
+\BOOKMARK [1][-]{section.10}{Conclusion}{}% 22
+\BOOKMARK [1][-]{section.11}{Works Cited}{}% 23
+\BOOKMARK [1][-]{section.12}{Figures and Captions}{}% 24
