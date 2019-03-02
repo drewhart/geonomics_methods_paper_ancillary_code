@@ -1,0 +1,53 @@
+- could split validations tests into methods and results sections (rather than both parts of each test being together)
+- explain why chose nuc diversity, why made so many parameter choices were made, why design and analytical decisions were made
+TWO-TRAIT:
+        - consider using separate colorschemes for each of the two traits in the two-trait test
+        - could be opening a can of worms by even showing results of this (rather than just illustrating it could
+          be done, by perhaps showing a diagram of a stack of rasters of diff env variables)
+MOVE-SURF FIGURES:
+        - put them side by side
+        - make the landscape somewhat smaller
+        - can highlight one cell and pop out to zoom into its distributions
+        - make the backgrounds alpha = 0.5 
+        - SECOND PLOT IS FLIPPED UP DOWN!
+PCA TEST:
+        - don't call it a PCA test! there's no testable hypoth
+        - EITHER:
+                - landscape with a movement barrier in the middle, and then one side with environmental diff
+                        - to show both IBcostD and IBE
+        - OR:
+                - use a more realsitic (e.g. fractal) landscape
+                
+
+- report  
+
+RUNTIME:
+        - caption is all in the wrong order
+
+YOSEMITE:
+        - can't even see the rasters!
+        - remove the individuals from the neighborhood-meaned raster
+        - consider including pictures of just the backgrounds        
+        - explain clear realistic A
+        - just read in a directory of rasters instead
+                - then I can get rid of the whole "we wrote some short scripts" junk, and actually highlight a cool
+                  component of the package while simulataneously simplifying the explanation
+        - put actual lat-lon values and actual temperature values instead
+        - 0.) choose an actual species to simulate
+        - 1.) download and load Cal-Adapt 
+        - 2.) run SDMs to develop hab-suitability layers
+        - 3.) point params file at those directories
+        - 4.) plot real lat/lon and temp values
+        - 5.) simulate
+        
+
+FIG 12:
+        - add landscape, phenotype, and fitness cbars back in
+
+
+- use different color palette across the whole packages
+- build one or one pair of figures that provide a.) an image-driven explanation that lays out the whole function of the package,
+and b.) a diagram of all components of of the model, 'cartoon style' 
+- get rid of term "IBR"
+- clarify how N_xy is being calculated and used in the density-dependence 
+- add quick statement about how long it took to run each simulation (in the context of the discussion of each of the example simulations)

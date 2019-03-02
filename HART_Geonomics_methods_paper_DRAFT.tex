@@ -8,6 +8,20 @@
 % TODO:
 
 % 1] update images
+        % bottleneck: perhaps add a graph of the expected persistence times under bottleneck vs non-bottleneck, compared to observed times
+        % stepstone: fix the legend on the Fst by island distance plot
+                    %get rid of the mean pop-size plot
+                    % fix legend on third plot
+                    % run for ~ 30K timesteps, to see if Fst vals actually approach the expectation once most alleles should have fixed in the pops if they were fully isolated
+        % divergence: run again and see if results are still so divergent from expectations (and if so probe the reason)
+                    % axis fontsize 12, and get rid of titles
+        % cline: axis fontsize 12, and get rid of titles
+        % sweep: run again, to make sure axis and titles and stuff are correct
+                 % make mean fitness a separate plot
+        % PCA: get rid of titles, fix axis text size
+        % two-trait: fix titles, axis text, etc
+                 % otherwise leave as is, to discuss during lab mtg?
+        % yosemite example: maybe make the plots manually, so that there's much less space between them all
 
 % 2] improve captions
 
@@ -15,7 +29,6 @@
 
 % 4] add conclusion
 
-% 5] add citations
 
 % 5] perhaps think through the meaning/implications of the details of the Yosemite example soome more,
 % perhaps change some parameters (e.g.\ emulate some specific species; treat each timestep as a year
@@ -61,7 +74,7 @@ There is ever-growing interest in understanding and even predicting
 the genomic evolution of complex study systems on complex and changing landscapes.
 Such systems might include one or multiple populations or species that are not
 at equilibrium. These species might inhabit complex, multivariate, and even changing landscapes.
-And may be undergoing both neutral evolution and natural selection, often on multiple traits
+And they may be undergoing both neutral evolution and natural selection, often on multiple traits
 of variable genetic architecture.
 Landscape genomics studies the ways in which ecological and evolutionary processes playing
 out on real landscapes generate geographical patterns of genomic diversity,
@@ -83,7 +96,7 @@ However, the current suite of forward-time genomic simulators, however numerous,
 Most available software is limited, either genomically or geospatially, in the complexity it can model.
 Many programs can model systems of considerable genomic complexity
 (e.g.\ simuPOP~\cite{peng}, NEMO~\cite{guillaume} and QuantiNemo~\cite{neuenschwander}),
-yet incorporate no or only rudimentary spatial components.
+yet incorporate only rudimentary spatial components or none at all.
 Various other programs are designed specifically for landscape-genetic simulations
 (e.g. CDPOP~\cite{landguth}, CDmetaPOP~\cite{landguth2}, SimAdapt~\cite{rebaudo}),
 but are limited in their genomic complexity.
@@ -114,7 +127,7 @@ written in compiled languages such as C++ (e.g. SLiM).
 But run time is not expected to be a major constraint for the sorts of models
 for which Geonomics was built (see runtime analyses, below). 
 And what Geonomics sacrifices in performance, it gains in flexibility, extensibility, and accessibility.
-In fact, the basic user needn't even need to know how to write full Python scripts to 
+In fact, the basic user needn't even know how to write full Python scripts to 
 build a Geonomics model; users can build their own models by recycling and tweaking
 a minimal amount of code (available within the documentation and at the Geonomics homepage).
 On the other hand, advanced users wishing to code their own extensions or customizations
@@ -250,7 +263,8 @@ a combination of the probability of death by density-dependence (from a spatiali
 and the probability of death by natural selection (on any number of traits simultaneously). 
 This is calculated as:
 \begin{equation}
-P(d_{i}) = 1 - (1 - P(d_{x,y})) \prod_{p = 1}^{m}\omega_{i,p}
+        P(d_{i}) = 1 - (1 - P(d_{x,y})) \prod_{p = 1}^{m}\omega_{i,p}
+\label{eqxn:prob_death_i}
 \end{equation}
 where $P(d_{x,y})$ is individual $i$'s probability of death by density-dependence
 and $\omega_{i,p}$ is individual $i$'s fitness for trait $p$
@@ -259,6 +273,7 @@ The probability of density-dependent death at location $x,y$ is calculated as:
 \begin{equation}
 \begin{split}
        P(d_{x,y}) = E[N_{d;x,y}]/N_{x,y} = \frac{E[N_{b;x,y}] - \frac{\mathrm{d}N_{x,y}}{\mathrm{d}t}}{N_{x,y}}
+\label{eqxn:prob_death_xy}
 \end{split}
 \end{equation}
 where $E[N_{d;x,y}]$ is the expected number of deaths at the individual's $x,y$ location on the landscape;
@@ -267,7 +282,8 @@ $E[N_{b;x,y}$ is the expected number of births at the location;
 and $\frac{\mathrm{d}N_{x,y}}{\mathrm{d}t}$ is the logistic population growth rate at the location.
 Individual $i$'s fitness for trait $p$ is calculated as:
 \begin{equation}
-\omega_{i,p}= 1 - \phi_{p;x,y} {( \mid e_{p;x,y} - z_{i;p} \mid )}^{\gamma_{p}}
+        \omega_{i,p}= 1 - \phi_{p;x,y} {( \mid e_{p;x,y} - z_{i;p} \mid )}^{\gamma_{p}}
+\label{eqxn:fitness}
 \end{equation}
 where $\phi_{p;x,y}$ is the selection coefficient on trait $p$ at the
 individual's location; $e_{p;x,y}$ is the environmental value
@@ -278,6 +294,7 @@ from the additive effects of the individual's genotypes at all influencing loci
 (Geonomics does not model epistasis) as:
 \begin{equation}
         z_{i;p} = g_{0} + \sum_{l = 0}^{n} \alpha_{p,l} g_{i,l}
+\label{eqxn:phenotype}
 \end{equation}
 where $n$ is the number of loci, $\alpha$ is a locus' effect size, $g$ is the
 individual's genotype, and $baseline\_genotype$ is 0 for monogenic traits,
@@ -303,8 +320,6 @@ at each of the set of timesteps defined \emph{a prior} by the user.
 
 
 \section{Validations tests}
-
-\section{Validations tests OLD}
 We have run a series of tests to statistically and heuristically validate
 the full range of functionality available in Geonomics.
 In this section, we briefly review the reasoning and parameterization for each test,
@@ -334,8 +349,8 @@ The mean persistence time for an allele
 (i.e.\ the expected number of generations for which a locus remains segregating) 
 is:
 \begin{equation}
-\bar{t}(p) = -4N[(1 - p)ln(1 - p) + pln(p)]
-\label{eqxn:mean_persist_t}
+        \bar{t}(p) = -4N[(1 - p)ln(1 - p) + pln(p)]
+\label{eqxn:wf_mean_persist_t}
 \end{equation}
 where $2N$ is the number of alleles in the population (such that $N$ can
 represent the diploid population size) and $p$ is the frequency of either allele
@@ -361,7 +376,7 @@ carrying-capacity raster (i.e.\ three values of `K\_factor'), hence for three me
 population sizes. For each mean population size (calculated as the harmonic mean,
 to account for stochastic fluctations around the carrying capacity), we compared
 mean persistence time to that
-expected by theory, according to equation~\ref{eqxn:mean_persist_t} in the previous paragraph. As can be
+expected by theory, according to equation~\ref{eqxn:wf_mean_persist_t} in the previous paragraph. As can be
 seen in Figures~\ref{fig:wf_trajs} and~\ref{fig:wf_persist_vs_popsize}, the results are a close match to theory.
 
 
@@ -395,7 +410,8 @@ a stationary level of genetic differentiation---migration-drift equilibrium.
 Theory provides the expected pairwise genetic differentiation
 between a pair of subpopulations at equilibrium as:
 \begin{equation}
-F_{ST} = \frac{1}{1 + 4Nm}
+        F_{ST} = \frac{1}{1 + 4Nm}
+\label{eqxn:F_ST_as_fn_of_mig}
 \end{equation}
 where $N$ is the population size and $m$ is the per-generation migration rate,
 such that $Nm$ can be interpreted as the per-generation number of migrant
@@ -415,13 +431,14 @@ migration rates between discrete locations on the Landscape.
 Thus we manually tracked the number of migration events during each timestep,
 for all possible directional migration events (i.e.\ for all permutations of island pairs),
 then used that data to calculate all mean migration rates.
-With those values, we solved equation 6, then compared
-the resulting $F_{ST}$ expectations to the observed values
-(calculated from the simulated data using two common methods; see Figure~\ref{fig:stepstone_pop_and_Fst_mig_expecs} for details).
+With those values, we solved equation~\ref{eqxn:F_ST_as_fn_of_mig},
+then compared the resulting $F_{ST}$ expectations to the observed values
+(calculated from the simulated data using two common methods;
+see Figure~\ref{fig:stepstone_pop_and_Fst_mig_expecs} for details).
 
-Results demonstrate that the model has approached migration-drift equilibrium
-(Figure~\ref{fig:stepstone_Fst_by_dist}), and that all island populations were at dynamic equilibria around the
-same mean size, as expected by theory (Figure~\ref{fig:stepstone_popsize}). 
+All island populations were at dynamic equilibria around the same mean size,
+and results demonstrate that the model approached migration-drift equilibrium,
+as expected by theory (Figure~\ref{fig:stepstone_Fst_by_dist}).
 Estimated migration rates and $F_{ST}$ values qualitatively match theoretical expectations:
 mean migration rate drops off precipitously at greater than one island's distance apart, 
 and genetic differentiation increases to approximate saturation.
@@ -442,7 +459,8 @@ and gene flow from migration, which causes homogenization.
 The rate of allele frequency change
 in either subpopulation at timestep t is expressed as:
 \begin{equation}
-\delta{q} = \frac{-spq[q + h(p - q)]}{1 - sq(2hp + q)} + m_{i}q^{*} - m_{o}q
+        \delta{q} = \frac{-spq[q + h(p - q)]}{1 - sq(2hp + q)} + m_{i}q^{*} - m_{o}q
+\label{eqxn:rate_allele_freq_change}
 \end{equation}
 where $q$ and $p$ are the frequencies of the deleterious and beneficial alleles
 in the subpopulation, $s$ is the selection
@@ -461,17 +479,17 @@ in sum, the overall carrying capacity of the landscape).
 We created one monogenic trait whose position was randomly chosen within a 
 genomic architecture of 100 independent (i.e.\ unlinked) loci.
 We ran the model for 1000 timesteps for each of three values of the parameter phi
-(identical to \emph{s} in equation 7): 0.1, 0.05, and 0.01.
+(identical to \emph{s} in equation~\ref{eqxn:rate_allele_freq_change}): 0.1, 0.05, and 0.01.
 Given that Geonomics does not employ express migration rates,
 we tracked the number of migration events (betwen the two contrasting halves of the first layer)
-during each timestep, then used that data to solve equation 7.
+during each timestep, then used that data to solve equation~\ref{eqxn:rate_allele_freq_change}.
 
 Results depict clear local adaptation to each of the two halves of the landscape,
 with opposite-phenotype bleedover and heterozygote births occuring along
-the border between the two habitats (Figure~\ref{fig:div} right).
+the border between the two habitats (Figure~\ref{fig:div_pop} right).
 Allele trajectories in each half of the environment follow qualitatively 
 the increasing and saturating trajectories expected by theory,
-but reach consistently more extreme allele frequencies than expected (Figure~\ref{fig:div}, left).
+but reach consistently more extreme allele frequencies than expected (Figure~\ref{fig:div_freqs}, left).
 
 
 \subsection{Cline test: local adaptation}
@@ -492,7 +510,8 @@ with the expectation that the clines fit to adaptive loci will mirror the gradie
 Numerous equations have been used to fit clines, but one of the most common
 is the sigmoidal \emph{tanh} function:
 \begin{equation}
-p_{x} = \frac{1}{2}(1 + \tanh[\frac{2(x - c)}{w}])
+        p_{x} = \frac{1}{2}(1 + \tanh[\frac{2(x - c)}{w}])
+\label{eqxn:cline}
 \end{equation}
 where $p$ is the frequency of the reference allele at position $x$ along the cline,
 $c$ is the centerpoint of the cline (such that $p_{x=c} = 0.5$), and $w$ is the 
@@ -509,13 +528,13 @@ The trait had a \emph{phi} (i.e.\ \emph{s}) of 0.01,
 with the gradient layer serving as its selective force.
 
 We ran the cline model for 2500 timesteps, then used a numerical optimization function
-(in Python's \texttt{scipy} package~\cite{scipy}) to fit \emph{tanh} clines to all loci.
+(in Python's \texttt{scipy} package~\cite{scipy}) to fit equation~\ref{eqxn:cline} for all loci.
 We plotted all fitted clines on top of the first landscape layer,
 with the cline for the one selective locus highlighted.
 The selective locus consistently and clearly stands out as the only locus with a cline
-matching the expectation (i.e.\ mirroring the environmental gradient; Figure~\ref{fig:cline}, left),
+matching the expectation (i.e.\ mirroring the environmental gradient; Figure~\ref{fig:cline_fits}),
 and results show an obviously locally adapted population, with a zone of hybridization
-and phenotypic spillover surrounding the cline's center (Figure~\ref{fig:cline}, right).
+and phenotypic spillover surrounding the cline's center (Figure~\ref{fig:cline_pop}).
 Furthermore, for a family of regression models of environmental value
 on genotype for all loci, after Bonferroni correction for multiple testing,
 the selective locus is consistently significant and the most significant 
@@ -560,17 +579,18 @@ genome-wide nucleotide diversity using a sliding-window approach.
 
 Geonomics realistically emulated the behavior of a selective sweep.
 The adaptive phenotype (the '1'|'1' genotype, plotted as white
-on a white environmental background; in Figure~\ref{fig:sweep}, top row)
+on a white environmental background; in Figure~\ref{fig:sweep_pop_and_nuc_div}, top row)
 clearly emerged in a region surrounding the mutation's origin,
 then spread rapidly throughout the population.
 The population's mean fitness increased quickly from 0.85
 (the universal fitness value before the mutation was introduced) to 1.00
-(the universal fitness value after the sweep was complete; Figure~\ref{fig:sweep}, bottom row, leftmost plot).
+(the universal fitness value after the sweep was complete;
+Figure~\ref{fig:sweep_mean_fit}).
 The linkage block around the sweeping locus was clearly visible
 as a region of depressed nucleotide diversity, which became more pronounced
 as the sweep went to completion, then slowly eroded as a result of recombination
 of the mutant haplotype's alleles onto non-mutant backgrounds
-(Figure~\ref{fig:sweep}, bottom row, second, third, and fourth plots from the left).
+(Figure~\ref{fig:sweep_pop_and_nuc_div}, bottom row).
 
 
 \subsection{PCA test: isolation by resistance}
@@ -630,12 +650,7 @@ spatial distribution of phenotypes for each of the two traits (Figure~\ref{fig:t
 
 
 \section{Example use-case: Polygenic adaptation to climate change in the Yosemite region}
-- good for now, but reread and edit anyhow
-
-
-\section{Example use-case: Polygenic adaptation to climate change in the Yosemite region OLD}
-
-Genomics' use and value is best demonstrated by walking through a worked example.
+Geonomics' use and value is best demonstrated by walking through a worked example.
 In this section, we explain a complex evolutionary scenario for which 
 simulated data is desirable, explain the steps by which we have simulated the
 scenario in Geonomics, and then present the results.
@@ -746,11 +761,47 @@ Figure~\ref{fig:yosemite}, row 3).
 
 
 \section{Caveats and considerations}
-- runtime analyses (basic), and explicitly point out the key concerns/parameters
-that users should think about for runtime and memory usage constraints (including, e.g.,
-a layer that serves as basis for movement-surface and that changes a lot)
-- need to discuss the weird approach to mutation?
+As mentioned above, Geonomics models run considerably slower than models
+written and optimized in compiled languages (such as SLiM;~\cite{messer,haller}).
+However, for users whose scenarios are well served by the design
+and affordances of Geonomics, we believe that what is sacrificed in
+runtime will be made up for in flexibility, customizability, and ease of use.
+With a reasonably powerful computer, we believe that most users
+will not find runtime a major limitation.
 
+Given the complexity of Geonomics and the number of parameters
+a user can modify, there are numerous parameters and parameter-combinations
+which could have a significant effect of a model's average runtime.
+It would be impossible to summarize them all here.
+However, we provide a rudimentary runtime analysis (Figure~\ref{fig:runtime},
+run on a modern laptop, highlighting some principal parameters
+that are likely to influence a model's average runtime per timestep.
+These are:
+\begin{description}
+  \item [\textbf{`K\_factor'}] The factor by which a species' carrying capacity
+        raster is multiplied to determine its local carrying capacities
+        and thus, in sum, its mean total population size;
+  \item [\textbf{`n\_births\_distr\_lambda'}] The $\lambda$ parameter on the Poisson
+        distribution from which the number of offspring per mating event
+        is drawn;
+  \item [\textbf{`dim'}] The dimensions of the simualted landscape;
+  \item [\textbf{`L'}] The length of the simulated genome;
+\end{description}
+(It is worth noting that runtime increases with landscape dimension both as a function
+of the corresponding increase in total population size---the sum of a larger
+carrying-capacity raster of, in these scenarios, equal-valued cells---and as
+a function of operations that scale with landscape dimension.
+So, the difference between the `K\_factor' and `dim' plots in Figure~\ref{fig:runtime}
+can be taken as an indication of the runtime cost of landscape dimension
+above and beyond population-sizing effects.)
+
+Memory usage could likewise pose real limitations for some users modeling some systems,
+but we believe it is unlikely to do so for most scenarios within the range
+of parameterizatons that are unlikely to pose runtime limitations, as discussed above.
+There are, however, two particular components of the model that could present
+special memory limitations.
+These relate to the topics in the two following paragraphs,
+so will be discussed therein.
 
 There are two unconventional approximations that Geonomics uses,
 in order to make such complex models tractable in Python within a reasonable amount of compute-time.
@@ -769,12 +820,23 @@ random variable with success equal to the rate of recombination between that loc
 Then, the paths are repeatedly shuffled and drawn through (think of a deck of cards)
 and used to index new gametes out of the genomes of reproducing individuals.
 In this way, free and potentially heterogeneous recombination is approximated.
+(Importantly, for large values of genome-length and large values of
+the number of simulated recombination paths, the data structure
+containing the recombination paths will effectively be a two-dimensional
+binary array whose size is the product of these values,
+which could wind up posing a real memory constraint.
+For genomic architectures with homogeneous recombination rates,
+Geonomics provides the option to use an alternative recombination mechanism,
+which simulates recombination on the fly but does so at a cost of increased
+average runtime per timestep. For details, see the documentation.)
+
 We feel that this is a reasonable approach that balances the needs of the system being modeled
 with the constraints of the interpreted language being used for the model,
 and that poses no risk of creating systematic artefacts.
 However, the user should be aware of two concerns:
 1. The total number of recombination paths generated
-(which is controlled from the parameters file) determines the precision with which truly 
+(which is controlled from the parameters file)
+determines the precision with which truly 
 free recombination at the stipulated genome-wide recombination rates is approximated.
 2. The total number of paths also dictates the precision at which close recombinations
 rates can be differentiated, because all loci with non-zero recombination rates are forced to
@@ -805,6 +867,14 @@ movement across a complex landscape without the need to run neighborhood-queryin
 (which are notoriously costly) during each model run.
 However, the accuracy of the approximations of the true distributions is a function of
 the length of the approximation vectors.
+(Notably, if the landscape layer that serves as the basis for a movement surface
+also undergoes environmental change, the movement surfaces for each step of this
+change event will be created and stored when the model itself is first created.
+Given that the movement surface is effectively a three-dimensional array of
+floating-point decimal numbers, a landscape with large dimensions and with
+a change event composed of many incremental changes could pose a memory constraint.
+The most obvious way to handle this problem would be to decrease the time-interval
+at which the change event unfolds. For details, see the documentation.)
 For complex landscapes, users may wish to ensure the accuracy with which their movement or
 dispersal surfaces reflect the true heterogeneity in their resistance layers.
 Geonomics provides a number of built-in visualization functions to aid in heuristic checks of this sort.
@@ -824,7 +894,7 @@ as required dependencies:
 \texttt{Scikit-learn}~\cite{scikit-learn},
 \texttt{statsmodels}~\cite{statsmodels},
 \texttt{PyVCF}~\cite{pyvcf},
-and \texttt{Bitarray}~\cite{bitarray}.
+and \texttt{Bitarray}~\cite{bitarray}.)
 The source code is also publicly available on GitHub (\url{URL\_HERE}),
 where it is actively maintained and developed.
 
@@ -846,140 +916,269 @@ and in the docstrings (the latter of which can be accessed by by calling Python'
   molecular ecology, conservation, etc. 
 - should be valuable for theoretical, methodological, empirical, and applied research
 - expandibility planned in advance (e.g.\ multi-species models foreseen)
+- mention that it's so flexible that it could even be used to simulate species lacking genomes (alone, or as one of a number of species in a community)
 
 
-\section{Works Cited}
 \bibliographystyle{plain}
 \bibliography{articles_etc,pkgs}
 
 \pagebreak
 \section{Figures and Captions}
 
-% fig 1
-\begin{figure}[h!]
-\includegraphics[width=125mm]{./img/flow_diagram.png}
-        \caption{Geonomics flow diagram}
+\begin{figure}[ht!]
+\includegraphics[width=125mm]{./img/final/flow_diagram.png}
+        \caption{Geonomics flow diagram: Steps taken by the user indicated by pink 
+                 rectangles (with associated code written in blue);
+                 operations included in each timestep of a model run
+                 indicated by the loop of blue ovals
+                 (with optional opeations indicated by hashed borders)}
         \label{fig:flow}
 \end{figure}
 
 
-% fig 2
-\begin{figure}[h!]
-\includegraphics[width=225mm]{./img/move_surf_histograms.png}
-        \caption{Histograms of the VonMises mixture-distribution approximations in a movement surface, plotted over a small landscape layer on which the surface is based. The taller the bar in a histogram, the higher the probability that an individual located on that histogram's cell will move in a direction within the angular neighborhood of that bar.}
+\begin{figure}[ht!]
+\includegraphics[width=150mm]{./img/final/move_surf_histograms.png}
+        \caption{Histograms of the VonMises mixture-distribution approximations
+                 underlying a movement surface, plotted over a small landscape
+                 layer on which the surface is based.
+                 The taller the bar in a histogram, the higher the probability
+                 that an individual located on that histogram's cell will move
+                 in a direction within the angular neighborhood of that bar.
+                 (Plot was produed by the Geonomics method
+                 \texttt{model.plot\_movement\_surface}.)}
         \label{fig:move_surf_hists}
 \end{figure}
 
-% fig 3
-\begin{figure}[h!]
-\includegraphics[width=225mm]{./img/move_surf_tracks.png}
-        \caption{Examples of movement tracks for 25 individuals randomly selected from a species, moving across the movement surface depicted in Figure 2. Each track is 150 steps long, beings at the individuals' starting locations (white dots), and thickens with each increasing timestep. Individudals' preference for higher-suitability regions of the landscape (values with environmental values nearer 1) is evident. Occasional migrations between isolated portions of the landscape can also be seen.}
+\begin{figure}[ht!]
+\includegraphics[width=150mm]{./img/final/move_surf_tracks.png}
+        \caption{Examples of movement tracks for 25 individuals
+                 randomly selected from a species, moving across
+                 the movement surface depicted in
+                 Figure~\ref{fig:move_surf_hists}.
+                 Each track is 150 steps long, beginning at
+                 the individuals' starting locations (white dots),
+                 and thickens with each increasing timestep.
+                 Individudals' preferential movement toward
+                 higher-suitability regions of the landscape
+                 (values with environmental values nearer 1) is evident.
+                 Occasional migrations between isolated portions of the
+                 landscape are also visible.
+                 (Plot was produced by the Geonomics function
+                 \texttt{gnx.help.param\_help.plot\_movement}.)}
         \label{fig:move_surf_tracks}
 \end{figure}
 
 
 
-% fig 4
-\begin{figure}[h!]
-\includegraphics[width=175mm]{./img/validation/wf/allele_trajectories.png}
-        \caption{Wright-Fisher test: allele-frequency trajectories; each line shows the trajectory of the '1'-allele for a different locus}
+\begin{figure}[ht!]
+\includegraphics[width=175mm]{./img/final/WF_allele_trajectories.pdf}
+        \caption{Wright-Fisher test: Trajectories for the frequencies of
+                 the `1'-alleles at each of 25 loci (one line per locus)
+                 in a Wright-Fisher model without mutation.
+                 Models were run for each of three mean population sizes
+                 (as determined by each of three fixed values for the
+                 `K\_factor' parameter, the factor by which the 0-1
+                 carrying-capacity raster is multiplied in order to
+                 define local carrying capacities and thus total population
+                 size).
+                 Models were run until all loci fixed.}
         \label{fig:wf_trajs}
 \end{figure}
 
 
-% fig 5
-\begin{figure}[h!]
-\includegraphics[width=175mm]{./img/validation/wf/pop_size_vs_K_factor_and_mean_persist_t_vs_pop_size.png}
-        \caption{Wright-Fisher test: left: mean population size as a function of `K\_factor' (multiplicative factor determining a species' spatialized carrying capacity and thus equilibrium population size; right: mean persistence time for segregating sites as a function of mean population size)}
+\begin{figure}[ht!]
+\includegraphics[width=150mm]{./img/final/WF_mean_persist_vs_pop_size.pdf}
+        \caption{Wright-Fisher test: Mean persistence time across all loci
+                 as a function of harmonic mean population size,
+                 compared between predictions based on
+                 Equation~\ref{eqxn:wf_mean_persist_t} (red dots)
+                 and observed values (blue).}
         \label{fig:wf_persist_vs_popsize}
 \end{figure}
 
 
-% fig 6
-\begin{figure}[h!]
+\begin{figure}[ht!]
 \includegraphics[width=175mm]{./img/validation/bottleneck/alleles_seem_to_take_too_long_to_fix.png}
-        \caption{Bottleneck test: 1-allele frequencies (top) and population size (bottom) as a function of time}
+        \caption{Bottleneck test: 1-allele frequencies (top)
+                 and population size (bottom) as a function of time,
+                 for a model 2500 timesteps long with a 50-timestep bottleneck}
         \label{fig:bottleneck}
 \end{figure}
 
 
-% fig 7
-\begin{figure}[h!]
-\includegraphics[width=175mm]{./img/validation/stepping_stone/Fst_over_time_vs_interisland_dist.png}
-        \caption{Stepping-stone test: $F_{ST}$ as a function of model time, across increasing inter-island distances (gradually darker shades of blue)}
+\begin{figure}[ht!]
+        \includegraphics[width=175mm]{./img/final/STEPPING_STONE_Fst_over_time}
+        \caption{Stepping-stone test: $F_{ST}$ over model time,
+                 plotted across increasing inter-island distances
+                 (from yellow to green)}
         \label{fig:stepstone_Fst_by_dist}
 \end{figure}
 
 
-% fig 8
-\begin{figure}[h!]
-\includegraphics[width=175mm]{./img/validation/stepping_stone/pop_size_over_time.png}
-\caption{Stepping-stone test: Population size as a function of time, for all 6 islands' populations}
-        \label{fig:stepstone_popsize}
-\end{figure}
-
-
-% fig 9
-\begin{figure}[h!]
-\includegraphics[width=175mm]{./img/validation/stepping_stone/pop_plot_and_Fst_and_mig_rate_plot.png}
-        \caption{Stepping-stone test: left: Map of all 6 islands' populations at the end of the simulation; right: pairwise $F_{ST}$ (left y-axis; calculated by 2 different formulae) and inter-island migration rate (right y-axis) as a function of inter-island distance; $R^{2}$ values and p-values result from quadratic regressions of $F_{ST}$ values on inter-island distance and log-log regression of mean migration rate on inter-island distance}
+\begin{figure}[ht!]
+        \includegraphics[width=190mm]{./img/final/STEPPING_STONE_pop_plot_and_Fst_vs_mig_rate.pdf}
+        \caption{Stepping-stone test: Left: Map of all 6 islands' populations
+                 at the end of the simulation;
+                 Right: Pairwise $F_{ST}$
+                 (left y-axis; calculated by 3 different formulae, indicated in legend)
+                 and inter-island migration rate (right y-axis)
+                 as a function of inter-island distance;
+                 $R^{2}$ values and p-values result from quadratic regressions
+                 of $F_{ST}$ values on inter-island distance and
+                 log-log regression of mean migration rate on inter-island distance.
+                 (Left plot was produced by the Geonomics method
+                 \texttt{model.plot}.)}
         \label{fig:stepstone_pop_and_Fst_mig_expecs}
 \end{figure}
 
 
-% fig 10
-\begin{figure}[h!]
-\includegraphics[width=175mm]{./img/validation/divergence/divergence_test_ca1400_individuals_1000_timesteps.png}
-        \caption{Contrasting-habitat test: left: Observed (markers) versus predicted (lines) allele-frequency trajectories for two contrasting habitats (blue = 0.0-valued; white = 1.0-valued), across three selection coefficients ($\phi$ = 0.01: stars; 0.05: crosses; 0.10: circles); right: map of the population after spatially divergent selection at $\phi$ = 0.10, with individuals, colored by phenotype (outer circles) and fitness (inner circles), plotted on top of the selective landscape layer (horizontally divided into white and blue halves)}
-        \label{fig:div}
+\begin{figure}[ht!]
+        \includegraphics[width=175mm]{./img/final/DIVERGENCE_allele_freqs.pdf}
+        \caption{Divergence test: Observed (markers) versus predicted (lines)
+                 allele-frequency trajectories for two contrasting habitats
+                 (blue = 0.0-valued; white = 1.0-valued),
+                 across models with three selection coefficients
+                 ($\phi$ = 0.01: stars; 0.05: crosses; 0.10: circles)}
+        \label{fig:div_freqs}
 \end{figure}
 
 
-% fig 11
-\begin{figure}[h!]
-\includegraphics[width=175mm]{./img/validation/cline/cline_adaptation_phi_0pt01_2500_timesteps.png}
-        \caption{Cline test: left: plot of allele-frequency clines (neutral loci in black, selective locus in bold red) against the selective landscape layer (horizontal gradient from blue to white); right: map of the final population on top of the selective lanscape layer, with individuals colored by phenotype (out circles) and fitness (inner circles)}
-        \label{fig:cline}
+\begin{figure}[ht!]
+        \includegraphics[width=175mm]{./img/final/DIVERGENCE_pop_plot.pdf}
+        \caption{Divergence test: Map of the population after
+                 spatially divergent selection at $\phi$ = 0.10.
+                 Individuals are plotted on top of the selective landscape layer
+                 (vertically divided into white and blue halves).
+                 They are colored by phenotype (outer circles;
+                 color ranges between white and dark blue,
+                 representing the optimal phenotypes on
+                 their color-matched environmental backgrounds)
+                 and by fitness (inner circles; increasing from red to green).
+                 (Plot was produced by the Geonomics method
+                 \texttt{model.plot\_fitness}.)}
+       \label{fig:div_pop}
 \end{figure}
 
 
-% fig 12
-\begin{figure}[h!]
-\includegraphics[width=175mm]{./img/validation/sweep/sweep_results.png}
-        \caption{Selective sweep test: top row: Maps of population (colored by phenotype) at various points in model time (from left to right: timestep 0, timestep 200, after completion of sweep, and 2500 timesteps after completion of sweep); bottom row: mean fitness as a function of model time (first plot on left) and genome-wide nucleotide diversity at timestep 200, immediately after completion of sweep, and 2500 timesteps after completion of sweep (second, third, and fourth plots from left)}
-        \label{fig:sweep}
+
+\begin{figure}[ht!]
+        \includegraphics[width=175mm]{./img/final/CLINE_fitted_clines.pdf}
+        \caption{Cline test: Plot of allele-frequency clines
+                 (neutral loci in black, selective locus in bold red)
+                 against the selective landscape layer
+                 (horizontal gradient from blue to white)}
+        \label{fig:cline_fits}
 \end{figure}
 
 
-% fig 13
-\begin{figure}[h!]
-        \includegraphics[width=175mm]{./img/validation/PCA/PCA_plot.png}
-        \caption{Spatial structure in a species evolving on a complex landscape layer serving as a movement surface, before (left) and after (right) 1000 timesteps of neutral evolution. Individuals' colors are derived from their values for the first three PCs of a genetic PCA (each PC scaled to $0\leq value\leq$, then used to assign RGB values)}
+
+\begin{figure}[ht!]
+        \includegraphics[width=175mm]{./img/final/CLINE_pop_plot.pdf}
+        \caption{Cline test: Map of the final population
+                 on top of the selective landscape layer,
+                 with individuals colored by phenotype (outer circles)
+                 and fitness (inner circles), as in Figure~\ref{fig:div_pop}.
+                 (Plot was produced by the Geonomics method
+                 \texttt{model.plot\_fitness}.)}
+        \label{fig:cline_pop}
+\end{figure}
+
+
+
+\begin{figure}[ht!]
+        \includegraphics[width=175mm]{./img/final/SWEEP_pop_and_nuc_div.pdf}
+        \caption{Selective sweep test: Maps of population (top row;
+                 colored by phenotype, as in Figure~\ref{fig:div_pop})
+                 and genome-wide nucleotide diversity
+                 (bottom row; calculated in $\leq$~11-locus windows)
+                 at various points in time during the model run
+                 (from left to right: timestep 0, 
+                 timestep 200, just after completion of the sweep,
+                 and 2500 timesteps after completion of the sweep).
+                 (Top-row plots were produced by the Geonomics method
+                 \texttt{model.plot\_phenotype}.)}
+       \label{fig:sweep_pop_and_nuc_div}
+\end{figure}
+
+
+
+\begin{figure}[ht!]
+        \includegraphics[width=150mm]{./img/final/SWEEP_mean_fit.pdf}
+        \caption{Selective sweep test: Mean fitness of the entire
+                 population, over the full run of the model
+                 depicted in Figure~\ref{fig:cline_pop}}
+        \label{fig:sweep_fit}
+\end{figure}
+
+
+
+\begin{figure}[ht!]
+        \includegraphics[width=175mm]{./img/final/PCA.pdf}
+        \caption{PCA test: Spatial structure in a species evolving
+                 on a complex landscape layer that serves as
+                 the species' movement surface, both before (left)
+                 and after (right) 1000 timesteps of neutral evolution.
+                 Individuals' colors are derived from their scores
+                 for the first three PCs of a genetic PCA
+                 (with each score scaled to $0\leq value\leq255$,
+                 then used to assign RGB values)}
         \label{fig:PCA}
 \end{figure}
 
 
-% fig 14
-\begin{figure}[h!]
+\begin{figure}[ht!]
         \includegraphics[width=175mm]{./img/validation/two-trait/two-trait_plot.png}
-        \caption{Results of simultaneous selection on two traits with divergent maps of selective force. Each trait has 10 unlinked loci and a selection coefficient of $\phi = 0.05$}
+        \caption{Simultaneous-selection test: Results of selection
+                 on two traits with divergent maps of selective force.
+                 Each trait has 10 unlinked loci
+                 and a selection coefficient of $\phi = 0.05$.
+                 Individuals are colored by phenotype as in Figure~\ref{fig:div_pop}.
+                 (Plots were produced by the Geonomics method
+                 \texttt{model.plot\_phenotype}.)}
         \label{fig:two_trait_unlinked}
 \end{figure}
 
 
-% fig 15
-\begin{figure}[h!]
+\begin{figure}[ht!]
         \includegraphics[width=175mm]{./img/validation/two-trait/two-trait_plot_LINKED.png}
-        \caption{Results of simultaneous selection on two traits with divergent maps of selective force. Each trait has 10 linked loci (recombination rate = 0.05) and a selection coefficient of $\phi = 0.05$}
+         \caption{Simultaneous-selection test: Results of the same
+                 scenario as in Figure~\ref{fig:two_trait_unlinked},
+                 but with linkage (recombination rate fixed at 0.05
+                 between all neighboring loci).
+                 Plot formatted identically.}
         \label{fig:two_trait_linked}
 \end{figure}
 
 
-% fig 16
-\begin{figure}[h!]
-\includegraphics[width=175mm]{./img/example/yosemite_results.png}
-        \caption{Temperature rasters (top row), habitat rasters (middle row), rasters of neighborhood-meaned phenotype (bottom row) at timesteps 0 (left column), 500 (before beginning of climate change; center column), and 1500 (after climate change; right column) for a species with a 100-gene trait adapted to temperature}
+\begin{figure}[ht!]
+        \includegraphics[width=175mm]{./img/final/YOSEMITE_time_series.png}
+        \caption{Temperature rasters (top row),
+                 habitat rasters (middle row),
+                 and rasters of neighborhood-meaned phenotype (bottom row)
+                 plotted at timesteps 0 (left column),
+                 500 (before beginning of climate change; center column),
+                 and 1500 (after climate change; right column)
+                 for a species with a 100-gene trait adapted to temperature.
+                 (Top- and middle-row plots were produced
+                 by the Geonomics method \texttt{model.plot\_phenotype}.)}
         \label{fig:yosemite}
+\end{figure}
+
+
+\begin{figure}[ht!]
+        \includegraphics[width=175mm]{./img/final/runtime.pdf}
+        \caption{Runtime analysis: average runtime per timestep (in seconds)
+                 as a function of various parameters
+                 (left to right: \textbf{`K\_factor'}:
+                 The factor by which a species' carrying capacity
+                 raster is multiplied to determine its local carrying capacities
+                 and thus, in sum, its mean total population size;
+                 \textbf{`n\_births\_distr\_lambda'}:
+                 The $\lambda$ parameter on the Poisson distribution from which
+                 the number of offspring per mating event is drawn;
+                 \textbf{`dim'}: The dimensions of the simualted landscape;
+                 \textbf{`L'}: The length of the simulated genome)}
+        \label{fig:runtime}
 \end{figure}
 
 
