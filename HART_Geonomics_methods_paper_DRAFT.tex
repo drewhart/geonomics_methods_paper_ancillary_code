@@ -135,7 +135,7 @@ have broad opportunity to do so, because Geonomics is a Python package that is s
 integrated into the universe of Python functionality.
 
 
-\section{Model overview}
+\section{Model description}
 
 \subsection{Components}
 A Geonomics model consists of two core components: the species and the landscape.
@@ -319,9 +319,355 @@ Likewise, statistics are calculated and data are collected
 at each of the set of timesteps defined \emph{a prior} by the user.
 
 
-\section{Validations tests}
-We have run a series of tests to statistically and heuristically validate
-the full range of functionality available in Geonomics.
+\subsection{Validation}
+We have run a series of tests to heuristically and statistically validate
+the full range of functionality available in Geonomics (see Supplements).
+All tests results matched their theoretical expectations
+according to population genetics and population genomics.
+
+
+\section{Applications}
+
+\subsection{Isolation by distance and by environment}
+Many real-world populations inhabit landscapes with complex patterns
+of hetereogeneous habitat suitability.
+The probability of an individual moving across each part of these landscapes
+is a function of that part's habitat.
+Ecologists often use resistance surfaces (or their reciprocal, resistance surfaces)
+to describe movement across such landscapes.
+Geonomics' movement surfaces and dispersal surfaces both model such movement
+(for individuals' timestep-to-timestep movement and for the dispersal of new
+offspring, respectively).
+In a population evolving on such a landscape, gene flow between any two locatons on the
+landscape is expected to be an inverse function of the resistance-distance between the locations.
+As a result of this, a pattern of isolation by resistance (IBR) is expected to develop:
+pairwise genetic distances between different populations, or different regions, should be
+positively correlated with pairwise resistance distances.
+
+To test this, we constructed a Geonomics model of a single species evolving neutrally
+for 1000 timesteps (i.e.\ 1000 rounds of mating) on a randomly generated complex landscape layer,
+with that layer serving as the basis for the species' movement surface.
+We ran a genetic Principal Components Analysis (PCA) on the full species' simulated genomes,
+both after the burn-in (i.e.\ when genomes had just been randomly drawn and assigned to all individuals)
+and after the model had run. For each PCA, we extracted the first three principal components (PCs),
+scaled them to $0\leq value\leq$, then used the resulting numerals to determine a the
+red, green, and blue (RGB) values for the color of each individual.
+We used those colors to color each of the individuals in a plot of the full species (using the \texttt{mod.plot()} command).
+
+The results show a clear lack of spatial structure at the outset
+(Figure~\ref{fig:IBD_IBE_PCA}, left);
+because genomes were randomly drawn and assigned,
+the population possessed no spatial structure.
+Spatial structure develops over evolutionary time
+(Figure~\ref{fig:IBD_IBE_PCA}, center), concordant with the development
+of local adaptation (Figure~\ref{fig:IBD_IBE_PCA}, right).
+At the end of the simulation, the species demonstrates a
+significant signal of both IBD (Figure~\ref{fig:IBD_IBE_scatter}, left)
+and IBE (Figure~\ref{fig:IBD_IBE_scatter}, right).
+
+
+\subsection{Simultaneous selection}
+{\large FIGURE OUT WHY THESE RESULTS DON'T LOOK RIGHT}
+One of the powerful features of Geonomics is that it can simulate on numerous traits simultaneously,
+each trait being selected upon by a distinct, and potentially spatially diferentially distributed selective force.
+When a population is undergoing selection of this nature, the evolutionary outcome should be a function of the
+genomic architecture of the traits (i.e.\ how many loci underlie them, and whether or not their loci are linked),
+and of the correlation of the two traits' selective forces in space.
+
+We simulated two scenarios for 1000 timesteps each. Both scenarios are situated on the same
+landscape---a landscape with two distinct and uncorrelated selective-force layers: 
+one a symmetric, horizontal environmental gradient from 0 to 1, the other a
+an identical but vertical gradient.
+In both scenarios, the simulated species has a 20-length genome, with 10 distinct loci underpinning
+each of the two traits in the simulation (i.e.\ there is no pleiotropy, hence no overlap
+in loci between the two traits). However, all loci are independent in the first scenario (recombination
+rate = 0.5), whereas all loci are linked in the second scenario (recombination rate = 0.05).
+
+Theory suggests that local adaptation should proceed successfully in the first scenario, but should be
+hindered in the second scenario because of genomic conflict resulting from opposing selection
+on closely linked loci.
+Heuristically, our results corroborate these expectations, with scenario 1 showing a clear
+signal of local adaptation (Figure~\ref{fig:two_trait_unlinked}) whereas scenario 2 shows a much messier and more complicated
+spatial distribution of phenotypes for each of the two traits (Figure~\ref{fig:two_trait_linked}).
+
+
+\subsection{Polygenic adaptation to climate change in the Yosemite region}
+Geonomics' use and value is best demonstrated by walking through a worked example.
+In this section, we explain a complex evolutionary scenario for which 
+simulated data is desirable, explain the steps by which we have simulated the
+scenario in Geonomics, and then present the results.
+(The source code for this example is available within the
+\texttt{./example/yosemite} directory of the Geonomics repository.)
+
+There is growing interest in the evolutionary implications of climate change.
+Much of this interest focuses on species that are locally adapted along some
+environmental gradient that is expected to shift under climate change.
+Such environmental shifts can be non-homogeneous spatially
+(e.g.\ cooler regions at higher altitudes appear to be warming more
+quickly than warmer, low-altitude regions).
+Of particular interest the ability for such species to adapt
+to changing conditions rather than simply shifting their ranges
+and/or being driven locally extinct.
+
+We simulate an example of such a study system: the adaptive
+response of a hypothetical, continuously distributed, locally adapted species
+to spatially heterogeneous climate change in the Yosemite region.
+To do so, we began by downloading a raster dataset of 30-year
+temperature normals for the Yosemite region (from Cal-Adapt; \url{www.caladapt.org}),
+cropped it to a 90-cell by 90-cell window surrounding the Yosmite valley,
+and saved the cropped file.
+We then wrote a couple short Python functions to produce from that raster
+the full set of rasters needed for the simulation
+(including current and projected future temperatures,
+and current and project future habitat suitability).
+
+Temperature is the environmental variable driving natural selection. 
+In order to model adaptive responses to change in this variable,
+we needed a raster of future temperatures,
+to feed into a landscape-change event as the endpoint raster.
+We could have downloaded a series of future-projection rasters and loaded
+them in as the stepwise changes for the environmental-change event,
+because Geonomics is designed to accept a directory of such files.
+However, to keep things simple we just processed the 30-year normals raster
+with a simple heuristic function.
+That function adds to the 30-year normals raster a fixed, region-wide
+temperature increase (2 degrees) plus an additional, elevation-dependent fraction
+of that increase (where there fraction varies from
+0.0 at the hottest cell to 1.0 at the coldest cell).
+This function emulates the fact that warming due to climate change is quickest at higher elevations.
+We saved the resulting future-temperature raster to a new raster file.
+
+We also needed habitat-suitability rasters for the model.
+These must reflect the fact that species tend to find highest-quality habitat,
+and thus exist at their highest densities, in the core of their range,
+and that edge habitat becomes increasingly marginal. 
+Thus we wrote a function that accepts the temperature raster as input and produces from
+it a second habitat-suitability raster (where cells with temperature values
+between 7 and 11 degrees Celsius are assigned a 1.0 quality value,
+and cells outside that range are assigned suitability values that linearly decrease
+to 0.0 in the hottest and coldest cells in the raster).
+We fed both the 30-year normals raster and the future temperature raster through this function,
+thereby generating both current and future habitat-suitability rasters,
+which we saved to new raster files.
+
+With these rasters prepared, we then created a Geonomics parameters file.
+We needed to parameterize a model with 2 `file'-type Layers
+(i.e.\ layers red in from files; see the Geonomics documentation for details),
+both of which would undergo landscape-change.
+We also needed to model to contain 1 Species,
+with movement, a movement-surface, and genomes with 1 trait.
+And we needed the model to carry out data-collection.
+The Geonomics command we ran to generate a template Geonomics parameters
+file with those components was:
+
+\begin{allintypewriter}
+>>> gnx.make\_parameters\_file(filepath=`yosemite\_params.py',\\
+                               layers=[\{`type': `file', `change': True\},\\
+                                       \{`type': `file', `change': True\}],\\
+                               species=[\{`movement': True, `movement\_surface': True,\\
+                                          `genomes': True, `n\_traits': 1\}],\\
+                               data=True)\\
+\end{allintypewriter}
+
+After running this command, we opened the resulting, auto-generated parameters
+file (\texttt{yosemite\_params.py}) and edited the parameters as needed.
+In the Layer `init' and `change' parameters sections we replaced
+the placeholder filenames with the names of the four temperature-derived
+rasters whose creation is explained above.
+We also parameterized the landscape-change events:
+both Layers would change from their original rasters to their final
+rasters in 20 stepwise changes over 1000 timesteps (i.e.\ 1000 years),
+starting on timestep 499 and finishing on timestep 1499.
+We stated that the habitat-quality layer would serve as the basis for the movement-surface.
+And we parameterized the model to include no mutation.
+We stipulated the selection coefficient (\emph{phi}) on the trait (0.05),
+and the number of loci underlying it (10 randomly-selected loci).
+We left all other parameters at default values.
+
+Finally, we wrote a short script to:
+\begin{enumerate}
+  \item create a model from the parameters (`mod = gnx.make\_model('./yosemite\_params.py')`);
+  \item manually burn in and run the model (using the \texttt{mod.walk} function to run the model
+in either `burn' or `main' mode for the desired number of timesteps;
+  \item plot the model at various timesteps, using \texttt{mod.plot\_<\_>} functions or manual \texttt{matplotlib} code.
+\end{enumerate}
+
+The model generated a clear and realistic pattern of polygenic adaptation to
+the elevation-based temperature gradient in the Yosemite region, and that
+gradient of local adpatation exhibited a pronounced upslope shift in response to
+the period of climate change. These results are visible both heuristically
+(from the individuals' phenotypes plotted across the three discrete timesteps' columns
+in Figure~\ref{fig:yosemite})
+and analytically (from the rasters of neighborhood-meaned phenotype plotted across
+Figure~\ref{fig:yosemite}, row 3).
+
+
+\section{Discussion}
+
+\large{~2 paragraphs summarizing key points and outcomes}
+
+\subsection{Caveats}
+As mentioned above, Geonomics models run considerably slower than models
+written and optimized in compiled languages (such as SLiM;~\cite{messer,haller}).
+However, for users whose scenarios are well served by the design
+and affordances of Geonomics, we believe that what is sacrificed in
+runtime will be made up for in flexibility, customizability, and ease of use.
+With a reasonably powerful computer, we believe that most users
+will not find runtime a major limitation.
+
+Given the complexity of Geonomics and the number of parameters
+a user can modify, there are numerous parameters and parameter-combinations
+which could have a significant effect of a model's average runtime.
+It would be impossible to summarize them all here.
+However, we provide a rudimentary runtime analysis (Figure~\ref{fig:runtime},
+run on a modern laptop, highlighting some principal parameters
+that are likely to influence a model's average runtime per timestep.
+These are:
+\begin{description}
+  \item [\textbf{`K\_factor'}] The factor by which a species' carrying capacity
+        raster is multiplied to determine its local carrying capacities
+        and thus, in sum, its mean total population size;
+  \item [\textbf{`n\_births\_distr\_lambda'}] The $\lambda$ parameter on the Poisson
+        distribution from which the number of offspring per mating event
+        is drawn;
+  \item [\textbf{`dim'}] The dimensions of the simualted landscape;
+  \item [\textbf{`L'}] The length of the simulated genome;
+\end{description}
+(It is worth noting that runtime increases with landscape dimension both as a function
+of the corresponding increase in total population size---the sum of a larger
+carrying-capacity raster of, in these scenarios, equal-valued cells---and as
+a function of operations that scale with landscape dimension.
+So, the difference between the `K\_factor' and `dim' plots in Figure~\ref{fig:runtime}
+can be taken as an indication of the runtime cost of landscape dimension
+above and beyond population-sizing effects.)
+
+Memory usage could likewise pose real limitations for some users modeling some systems,
+but we believe it is unlikely to do so for most scenarios within the range
+of parameterizatons that are unlikely to pose runtime limitations, as discussed above.
+There are, however, two particular components of the model that could present
+special memory limitations.
+These relate to the topics in the two following paragraphs,
+so will be discussed therein.
+
+There are two unconventional approximations that Geonomics uses,
+in order to make such complex models tractable in Python within a reasonable amount of compute-time.
+The first is the approximation used to model recombination along a simulated genome.
+Precise modeling of recombination between all loci when each gamete is produced
+would require an extremely large number of Bernoulli draws---
+roughly $2LbT$, where $2$ represents diploidy, $L$ is the length of the genome,
+$b$ is the mean number of births per timestep, and $T$ is the number of timesteps.
+So as to avoid generating such a large amount of random numbers throughout a model run,
+when a Geonomics model is first created, Geonomics generates and saves
+(as binary arrays) a large collection of recombination paths (the exact number of which can
+be parameterized by the user).
+(A recombination path is a locuswise map along a pair of homologous genomes,
+represented as 0 and 1, where a switch between 0 and 1 at each locus is drawn as a Bernoulli
+random variable with success equal to the rate of recombination between that locus and the next.)
+Then, the paths are repeatedly shuffled and drawn through (think of a deck of cards)
+and used to index new gametes out of the genomes of reproducing individuals.
+In this way, free and potentially heterogeneous recombination is approximated.
+(Importantly, for large values of genome-length and large values of
+the number of simulated recombination paths, the data structure
+containing the recombination paths will effectively be a two-dimensional
+binary array whose size is the product of these values,
+which could wind up posing a real memory constraint.
+For genomic architectures with homogeneous recombination rates,
+Geonomics provides the option to use an alternative recombination mechanism,
+which simulates recombination on the fly but does so at a cost of increased
+average runtime per timestep. For details, see the documentation.)
+
+We feel that this is a reasonable approach that balances the needs of the system being modeled
+with the constraints of the interpreted language being used for the model,
+and that poses no risk of creating systematic artefacts.
+However, the user should be aware of two concerns:
+1. The total number of recombination paths generated
+(which is controlled from the parameters file)
+determines the precision with which truly 
+free recombination at the stipulated genome-wide recombination rates is approximated.
+2. The total number of paths also dictates the precision at which close recombinations
+rates can be differentiated, because all loci with non-zero recombination rates are forced to
+have at least a single recombination rate among the set of recombination paths that are generated
+(e.g., the smallest recombination rate that can be modeled when 10000 recombination paths
+are used is $1/10000=10\exp^{-4}$, such that a locus with a nominal recombination rate of 
+$10\exp^-5$ would be inaccurately modeled as recombiningwith a probability of $10\exp^{-4}$). 
+When necessary, Geonomics raises relevant warnings about this at the time that a model is created.
+
+The other approximation of which users should be aware
+is that of movement across a heterogeneous resistance layer.
+This is implemented by the movement surface and dispersal surface objects
+(both of which are identical in structure and function).
+Conceptually, a movement or dispersal surface is an $x$x$y$ array of VonMises (i.e circular)
+probability distributions. Each distribution pertains to its corresponding landscape cell,
+and for an individual located on that cell and about to undergo movement or dispersal
+it is used as the distribution from which the individual's direction is drawn.
+The distributions can be made either uni- or multimodal (i.e.\ either single VonMises distributions
+or VonMises mixture distributions), and they represent the probability of an individual in a given
+cell moving in all directions, based on the environmental values in the surrounding cells.
+Programmatically, this is implemented using an array of vectors of draws from the distributions,
+such that the vectors serve as approxiations of the true distributions (much like unbinned histograms).
+Thus, a movement or dispersal surface is structured as an $x$x$y$x$z$ \texttt{numpy} array,
+where $x$ and $y$ are the x- and y-dimensions of the landscape and $z$ is the length of the
+vectors approximating the true distributions.
+This structure is built when a model is first created, and then allows us to simulate realistic
+movement across a complex landscape without the need to run neighborhood-querying functions
+(which are notoriously costly) during each model run.
+However, the accuracy of the approximations of the true distributions is a function of
+the length of the approximation vectors.
+(Notably, if the landscape layer that serves as the basis for a movement surface
+also undergoes environmental change, the movement surfaces for each step of this
+change event will be created and stored when the model itself is first created.
+Given that the movement surface is effectively a three-dimensional array of
+floating-point decimal numbers, a landscape with large dimensions and with
+a change event composed of many incremental changes could pose a memory constraint.
+The most obvious way to handle this problem would be to decrease the time-interval
+at which the change event unfolds. For details, see the documentation.)
+For complex landscapes, users may wish to ensure the accuracy with which their movement or
+dispersal surfaces reflect the true heterogeneity in their resistance layers.
+Geonomics provides a number of built-in visualization functions to aid in heuristic checks of this sort.
+
+
+\section{Getting started}
+For those interested in using Geonomics, the simplest way is to install
+via \texttt{pip} (a Python package installer),
+by calling \texttt{\$ pip install geonomics}.
+(Note that Geonomics only uses common, well established Python packages
+as required dependencies:
+\texttt{Numpy}~\cite{numpy},
+\texttt{Matplotlib}~\cite{matplotlib},
+\texttt{Pandas}~\cite{pandas},
+\texttt{Shapely}~\cite{shapely},
+\texttt{Scipy}~\cite{scipy},
+\texttt{Scikit-learn}~\cite{scikit-learn},
+\texttt{statsmodels}~\cite{statsmodels},
+\texttt{PyVCF}~\cite{pyvcf},
+and \texttt{Bitarray}~\cite{bitarray}.)
+The source code is also publicly available on GitHub (\url{URL\_HERE}),
+where it is actively maintained and developed.
+
+The documentation is comprehensive (and will continue to expand as new worked examples
+are offered and new functionality is added to the package), and is available
+online at \url{http://htmlpreview.github.io/?https://github.com/drewhart/geonomics\_docs/blob/master/built/doc.html}.  
+The simplest and advanced use cases are explained above (see section
+\emph{Design, structure, and function}), as well as in the documentation.
+The documentation provides a detailed section explaining the meaning,
+default values, and usage for every parameter in a Geonomics parameter file.
+Details about the usage of each function are available both in the documentation
+and in the docstrings (the latter of which can be accessed by by calling Python's
+\texttt{help()} function on a function of interest).
+
+
+\section{Conclusion}
+- very very brief summary of, once again, Geonomics' design-purposed ability
+- think it should be very helpful for running simulations of high utility to
+  molecular ecology, conservation, etc. 
+- should be valuable for theoretical, methodological, empirical, and applied research
+- expandibility planned in advance (e.g.\ multi-species models foreseen)
+- mention that it's so flexible that it could even be used to simulate species lacking genomes (alone, or as one of a number of species in a community)
+
+
+\section{Supplements}
+
+\subsection{Validations tests}
 In this section, we briefly review the reasoning and parameterization for each test,
 then present the results.
 (We discuss only parameters of key importance to each scenario.
@@ -593,334 +939,12 @@ of the mutant haplotype's alleles onto non-mutant backgrounds
 (Figure~\ref{fig:sweep_pop_and_nuc_div}, bottom row).
 
 
-\subsection{PCA test: isolation by resistance}
-Many real-world populations inhabit landscapes with complex patterns
-of hetereogeneous habitat suitability.
-The probability of an individual moving across each part of these landscapes
-is a function of that part's habitat.
-Ecologists often use resistance surfaces (or their reciprocal, resistance surfaces)
-to describe movement across such landscapes.
-Geonomics' movement surfaces and dispersal surfaces both model such movement
-(for individuals' timestep-to-timestep movement and for the dispersal of new
-offspring, respectively).
-In a population evolving on such a landscape, gene flow between any two locatons on the
-landscape is expected to be an inverse function of the resistance-distance between the locations.
-As a result of this, a pattern of isolation by resistance (IBR) is expected to develop:
-pairwise genetic distances between different populations, or different regions, should be
-positively correlated with pairwise resistance distances.
-
-To test this, we constructed a Geonomics model of a single species evolving neutrally
-for 1000 timesteps (i.e.\ 1000 rounds of mating) on a randomly generated complex landscape layer,
-with that layer serving as the basis for the species' movement surface.
-We ran a genetic Principal Components Analysis (PCA) on the full species' simulated genomes,
-both after the burn-in (i.e.\ when genomes had just been randomly drawn and assigned to all individuals)
-and after the model had run. For each PCA, we extracted the first three principal components (PCs),
-scaled them to $0\leq value\leq$, then used the resulting numerals to determine a the
-red, green, and blue (RGB) values for the color of each individual.
-We used those colors to color each of the individuals in a plot of the full species (using the \texttt{mod.plot()} command).
-
-The results (in Figure~\ref{fig:PCA}) show a clear lack of spatial structure at the outset; because genomes were randomly drawn and assigned,
-the population possessed no spatial structure. But more importantly, the results demonstrate significant
-spatial strucutre, which maps onto the movement surface's landscape layer exactly as one would expect.
-Neutral evolution with realistic movement across this landscape generated a clear and strong signal of IBR.
-
-\subsection{simultaneous-selection test: selection on multiple traits}
-{\large FIGURE OUT WHY THESE RESULTS DON'T LOOK RIGHT}
-One of the powerful features of Geonomics is that it can simulate on numerous traits simultaneously,
-each trait being selected upon by a distinct, and potentially spatially diferentially distributed selective force.
-When a population is undergoing selection of this nature, the evolutionary outcome should be a function of the
-genomic architecture of the traits (i.e.\ how many loci underlie them, and whether or not their loci are linked),
-and of the correlation of the two traits' selective forces in space.
-
-We simulated two scenarios for 1000 timesteps each. Both scenarios are situated on the same
-landscape---a landscape with two distinct and uncorrelated selective-force layers: 
-one a symmetric, horizontal environmental gradient from 0 to 1, the other a
-an identical but vertical gradient.
-In both scenarios, the simulated species has a 20-length genome, with 10 distinct loci underpinning
-each of the two traits in the simulation (i.e.\ there is no pleiotropy, hence no overlap
-in loci between the two traits). However, all loci are independent in the first scenario (recombination
-rate = 0.5), whereas all loci are linked in the second scenario (recombination rate = 0.05).
-
-Theory suggests that local adaptation should proceed successfully in the first scenario, but should be
-hindered in the second scenario because of genomic conflict resulting from opposing selection
-on closely linked loci.
-Heuristically, our results corroborate these expectations, with scenario 1 showing a clear
-signal of local adaptation (Figure~\ref{fig:two_trait_unlinked}) whereas scenario 2 shows a much messier and more complicated
-spatial distribution of phenotypes for each of the two traits (Figure~\ref{fig:two_trait_linked}).
-
-
-\section{Example use-case: Polygenic adaptation to climate change in the Yosemite region}
-Geonomics' use and value is best demonstrated by walking through a worked example.
-In this section, we explain a complex evolutionary scenario for which 
-simulated data is desirable, explain the steps by which we have simulated the
-scenario in Geonomics, and then present the results.
-(The source code for this example is available within the
-\texttt{./example/yosemite} directory of the Geonomics repository.)
-
-There is growing interest in the evolutionary implications of climate change.
-Much of this interest focuses on species that are locally adapted along some
-environmental gradient that is expected to shift under climate change.
-Such environmental shifts can be non-homogeneous spatially
-(e.g.\ cooler regions at higher altitudes appear to be warming more
-quickly than warmer, low-altitude regions).
-Of particular interest the ability for such species to adapt
-to changing conditions rather than simply shifting their ranges
-and/or being driven locally extinct.
-
-We simulate an example of such a study system: the adaptive
-response of a hypothetical, continuously distributed, locally adapted species
-to spatially heterogeneous climate change in the Yosemite region.
-To do so, we began by downloading a raster dataset of 30-year
-temperature normals for the Yosemite region (from Cal-Adapt; \url{www.caladapt.org}),
-cropped it to a 90-cell by 90-cell window surrounding the Yosmite valley,
-and saved the cropped file.
-We then wrote a couple short Python functions to produce from that raster
-the full set of rasters needed for the simulation
-(including current and projected future temperatures,
-and current and project future habitat suitability).
-
-Temperature is the environmental variable driving natural selection. 
-In order to model adaptive responses to change in this variable,
-we needed a raster of future temperatures,
-to feed into a landscape-change event as the endpoint raster.
-We could have downloaded a series of future-projection rasters and loaded
-them in as the stepwise changes for the environmental-change event,
-because Geonomics is designed to accept a directory of such files.
-However, to keep things simple we just processed the 30-year normals raster
-with a simple heuristic function.
-That function adds to the 30-year normals raster a fixed, region-wide
-temperature increase (2 degrees) plus an additional, elevation-dependent fraction
-of that increase (where there fraction varies from
-0.0 at the hottest cell to 1.0 at the coldest cell).
-This function emulates the fact that warming due to climate change is quickest at higher elevations.
-We saved the resulting future-temperature raster to a new raster file.
-
-We also needed habitat-suitability rasters for the model.
-These must reflect the fact that species tend to find highest-quality habitat,
-and thus exist at their highest densities, in the core of their range,
-and that edge habitat becomes increasingly marginal. 
-Thus we wrote a function that accepts the temperature raster as input and produces from
-it a second habitat-suitability raster (where cells with temperature values
-between 7 and 11 degrees Celsius are assigned a 1.0 quality value,
-and cells outside that range are assigned suitability values that linearly decrease
-to 0.0 in the hottest and coldest cells in the raster).
-We fed both the 30-year normals raster and the future temperature raster through this function,
-thereby generating both current and future habitat-suitability rasters,
-which we saved to new raster files.
-
-With these rasters prepared, we then created a Geonomics parameters file.
-We needed to parameterize a model with 2 `file'-type Layers
-(i.e.\ layers red in from files; see the Geonomics documentation for details),
-both of which would undergo landscape-change.
-We also needed to model to contain 1 Species,
-with movement, a movement-surface, and genomes with 1 trait.
-And we needed the model to carry out data-collection.
-The Geonomics command we ran to generate a template Geonomics parameters
-file with those components was:
-
-\begin{allintypewriter}
->>> gnx.make\_parameters\_file(filepath=`yosemite\_params.py',\\
-                               layers=[\{`type': `file', `change': True\},\\
-                                       \{`type': `file', `change': True\}],\\
-                               species=[\{`movement': True, `movement\_surface': True,\\
-                                          `genomes': True, `n\_traits': 1\}],\\
-                               data=True)\\
-\end{allintypewriter}
-
-After running this command, we opened the resulting, auto-generated parameters
-file (\texttt{yosemite\_params.py}) and edited the parameters as needed.
-In the Layer `init' and `change' parameters sections we replaced
-the placeholder filenames with the names of the four temperature-derived
-rasters whose creation is explained above.
-We also parameterized the landscape-change events:
-both Layers would change from their original rasters to their final
-rasters in 20 stepwise changes over 1000 timesteps (i.e.\ 1000 years),
-starting on timestep 499 and finishing on timestep 1499.
-We stated that the habitat-quality layer would serve as the basis for the movement-surface.
-And we parameterized the model to include no mutation.
-We stipulated the selection coefficient (\emph{phi}) on the trait (0.05),
-and the number of loci underlying it (100 randomly-selected loci).
-We left all other parameters at default values.
-
-Finally, we wrote a short script to:
-\begin{enumerate}
-  \item create a model from the parameters (`mod = gnx.make\_model('./yosemite\_params.py')`);
-  \item manually burn in and run the model (using the \texttt{mod.walk} function to run the model
-in either `burn' or `main' mode for the desired number of timesteps;
-  \item plot the model at various timesteps, using \texttt{mod.plot\_<\_>} functions or manual \texttt{matplotlib} code.
-\end{enumerate}
-
-The model generated a clear and realistic pattern of polygenic adaptation to
-the elevation-based temperature gradient in the Yosemite region, and that
-gradient of local adpatation exhibited a pronounced upslope shift in response to
-the period of climate change. These results are visible both heuristically
-(from the individuals' phenotypes plotted across the three discrete timesteps' columns
-in Figure~\ref{fig:yosemite})
-and analytically (from the rasters of neighborhood-meaned phenotype plotted across
-Figure~\ref{fig:yosemite}, row 3).
-
-
-\section{Caveats and considerations}
-As mentioned above, Geonomics models run considerably slower than models
-written and optimized in compiled languages (such as SLiM;~\cite{messer,haller}).
-However, for users whose scenarios are well served by the design
-and affordances of Geonomics, we believe that what is sacrificed in
-runtime will be made up for in flexibility, customizability, and ease of use.
-With a reasonably powerful computer, we believe that most users
-will not find runtime a major limitation.
-
-Given the complexity of Geonomics and the number of parameters
-a user can modify, there are numerous parameters and parameter-combinations
-which could have a significant effect of a model's average runtime.
-It would be impossible to summarize them all here.
-However, we provide a rudimentary runtime analysis (Figure~\ref{fig:runtime},
-run on a modern laptop, highlighting some principal parameters
-that are likely to influence a model's average runtime per timestep.
-These are:
-\begin{description}
-  \item [\textbf{`K\_factor'}] The factor by which a species' carrying capacity
-        raster is multiplied to determine its local carrying capacities
-        and thus, in sum, its mean total population size;
-  \item [\textbf{`n\_births\_distr\_lambda'}] The $\lambda$ parameter on the Poisson
-        distribution from which the number of offspring per mating event
-        is drawn;
-  \item [\textbf{`dim'}] The dimensions of the simualted landscape;
-  \item [\textbf{`L'}] The length of the simulated genome;
-\end{description}
-(It is worth noting that runtime increases with landscape dimension both as a function
-of the corresponding increase in total population size---the sum of a larger
-carrying-capacity raster of, in these scenarios, equal-valued cells---and as
-a function of operations that scale with landscape dimension.
-So, the difference between the `K\_factor' and `dim' plots in Figure~\ref{fig:runtime}
-can be taken as an indication of the runtime cost of landscape dimension
-above and beyond population-sizing effects.)
-
-Memory usage could likewise pose real limitations for some users modeling some systems,
-but we believe it is unlikely to do so for most scenarios within the range
-of parameterizatons that are unlikely to pose runtime limitations, as discussed above.
-There are, however, two particular components of the model that could present
-special memory limitations.
-These relate to the topics in the two following paragraphs,
-so will be discussed therein.
-
-There are two unconventional approximations that Geonomics uses,
-in order to make such complex models tractable in Python within a reasonable amount of compute-time.
-The first is the approximation used to model recombination along a simulated genome.
-Precise modeling of recombination between all loci when each gamete is produced
-would require an extremely large number of Bernoulli draws---
-roughly $2LbT$, where $2$ represents diploidy, $L$ is the length of the genome,
-$b$ is the mean number of births per timestep, and $T$ is the number of timesteps.
-So as to avoid generating such a large amount of random numbers throughout a model run,
-when a Geonomics model is first created, Geonomics generates and saves
-(as binary arrays) a large collection of recombination paths (the exact number of which can
-be parameterized by the user).
-(A recombination path is a locuswise map along a pair of homologous genomes,
-represented as 0 and 1, where a switch between 0 and 1 at each locus is drawn as a Bernoulli
-random variable with success equal to the rate of recombination between that locus and the next.)
-Then, the paths are repeatedly shuffled and drawn through (think of a deck of cards)
-and used to index new gametes out of the genomes of reproducing individuals.
-In this way, free and potentially heterogeneous recombination is approximated.
-(Importantly, for large values of genome-length and large values of
-the number of simulated recombination paths, the data structure
-containing the recombination paths will effectively be a two-dimensional
-binary array whose size is the product of these values,
-which could wind up posing a real memory constraint.
-For genomic architectures with homogeneous recombination rates,
-Geonomics provides the option to use an alternative recombination mechanism,
-which simulates recombination on the fly but does so at a cost of increased
-average runtime per timestep. For details, see the documentation.)
-
-We feel that this is a reasonable approach that balances the needs of the system being modeled
-with the constraints of the interpreted language being used for the model,
-and that poses no risk of creating systematic artefacts.
-However, the user should be aware of two concerns:
-1. The total number of recombination paths generated
-(which is controlled from the parameters file)
-determines the precision with which truly 
-free recombination at the stipulated genome-wide recombination rates is approximated.
-2. The total number of paths also dictates the precision at which close recombinations
-rates can be differentiated, because all loci with non-zero recombination rates are forced to
-have at least a single recombination rate among the set of recombination paths that are generated
-(e.g., the smallest recombination rate that can be modeled when 10000 recombination paths
-are used is $1/10000=10\exp^{-4}$, such that a locus with a nominal recombination rate of 
-$10\exp^-5$ would be inaccurately modeled as recombiningwith a probability of $10\exp^{-4}$). 
-When necessary, Geonomics raises relevant warnings about this at the time that a model is created.
-
-The other approximation of which users should be aware
-is that of movement across a heterogeneous resistance layer.
-This is implemented by the movement surface and dispersal surface objects
-(both of which are identical in structure and function).
-Conceptually, a movement or dispersal surface is an $x$x$y$ array of VonMises (i.e circular)
-probability distributions. Each distribution pertains to its corresponding landscape cell,
-and for an individual located on that cell and about to undergo movement or dispersal
-it is used as the distribution from which the individual's direction is drawn.
-The distributions can be made either uni- or multimodal (i.e.\ either single VonMises distributions
-or VonMises mixture distributions), and they represent the probability of an individual in a given
-cell moving in all directions, based on the environmental values in the surrounding cells.
-Programmatically, this is implemented using an array of vectors of draws from the distributions,
-such that the vectors serve as approxiations of the true distributions (much like unbinned histograms).
-Thus, a movement or dispersal surface is structured as an $x$x$y$x$z$ \texttt{numpy} array,
-where $x$ and $y$ are the x- and y-dimensions of the landscape and $z$ is the length of the
-vectors approximating the true distributions.
-This structure is built when a model is first created, and then allows us to simulate realistic
-movement across a complex landscape without the need to run neighborhood-querying functions
-(which are notoriously costly) during each model run.
-However, the accuracy of the approximations of the true distributions is a function of
-the length of the approximation vectors.
-(Notably, if the landscape layer that serves as the basis for a movement surface
-also undergoes environmental change, the movement surfaces for each step of this
-change event will be created and stored when the model itself is first created.
-Given that the movement surface is effectively a three-dimensional array of
-floating-point decimal numbers, a landscape with large dimensions and with
-a change event composed of many incremental changes could pose a memory constraint.
-The most obvious way to handle this problem would be to decrease the time-interval
-at which the change event unfolds. For details, see the documentation.)
-For complex landscapes, users may wish to ensure the accuracy with which their movement or
-dispersal surfaces reflect the true heterogeneity in their resistance layers.
-Geonomics provides a number of built-in visualization functions to aid in heuristic checks of this sort.
-
-
-\section{Getting started}
-For those interested in using Geonomics, the simplest way is to install
-via \texttt{pip} (a Python package installer),
-by calling \texttt{\$ pip install geonomics}.
-(Note that Geonomics only uses common, well established Python packages
-as required dependencies:
-\texttt{Numpy}~\cite{numpy},
-\texttt{Matplotlib}~\cite{matplotlib},
-\texttt{Pandas}~\cite{pandas},
-\texttt{Shapely}~\cite{shapely},
-\texttt{Scipy}~\cite{scipy},
-\texttt{Scikit-learn}~\cite{scikit-learn},
-\texttt{statsmodels}~\cite{statsmodels},
-\texttt{PyVCF}~\cite{pyvcf},
-and \texttt{Bitarray}~\cite{bitarray}.)
-The source code is also publicly available on GitHub (\url{URL\_HERE}),
-where it is actively maintained and developed.
-
-The documentation is comprehensive (and will continue to expand as new worked examples
-are offered and new functionality is added to the package), and is available
-online at \url{http://htmlpreview.github.io/?https://github.com/drewhart/geonomics\_docs/blob/master/built/doc.html}.  
-The simplest and advanced use cases are explained above (see section
-\emph{Design, structure, and function}), as well as in the documentation.
-The documentation provides a detailed section explaining the meaning,
-default values, and usage for every parameter in a Geonomics parameter file.
-Details about the usage of each function are available both in the documentation
-and in the docstrings (the latter of which can be accessed by by calling Python's
-\texttt{help()} function on a function of interest).
-
-
-\section{Conclusion}
-- very very brief summary of, once again, Geonomics' design-purposed ability
-- think it should be very helpful for running simulations of high utility to
-  molecular ecology, conservation, etc. 
-- should be valuable for theoretical, methodological, empirical, and applied research
-- expandibility planned in advance (e.g.\ multi-species models foreseen)
-- mention that it's so flexible that it could even be used to simulate species lacking genomes (alone, or as one of a number of species in a community)
 
 
 \bibliographystyle{plain}
 \bibliography{articles_etc,pkgs}
+
+
 
 \pagebreak
 \section{Figures and Captions}
@@ -1113,17 +1137,36 @@ and in the docstrings (the latter of which can be accessed by by calling Python'
 
 
 \begin{figure}[ht!]
-        \includegraphics[width=175mm]{./img/final/PCA.pdf}
-        \caption{PCA test: Spatial structure in a species evolving
-                 on a complex landscape layer that serves as
-                 the species' movement surface, both before (left)
-                 and after (right) 1000 timesteps of neutral evolution.
+        \includegraphics[width=175mm]{./img/final/IBD_IBE_PCA.png}
+        \caption{Isolation by distance (IBD) and isolation by environment (IBE):
+                 Spatial structure in a species evolving on a
+                 landscape consisting of 1.) a barrier layer
+                 that serves as the species' movement surface
+                 (displayed here as the masked band down the landscape center)
+                 and 2.) an environmental layer that serves as
+                 the selective surface for a 10-locus trait
+                 (displayed here as the red and blue regions of the landscape).
+                 Species plotted both before (left)
+                 and after (right) 1000 timesteps of evolution.
                  Individuals' colors are derived from their scores
                  for the first three PCs of a genetic PCA
                  (with each score scaled to $0\leq value\leq255$,
                  then used to assign RGB values)}
-        \label{fig:PCA}
+        \label{fig:IBD_IBE_PCA}
 \end{figure}
+
+
+
+\begin{figure}[ht!]
+        \includegraphics[width=175mm]{./img/final/IBD_IBE_scatter.png}
+        \caption{Isolation by distance (IBD) and isolation by environment (IBE):
+                 Scatter plots of inter-individual pairwise genetic distance
+                 (calculated as Euclidean distance in genetic PC space)
+                 as a function of Euclidean geographic distance (left)
+                 and Euclidean environmental distance (right).}
+        \label{fig:IBD_IBE_scatter}
+\end{figure}
+
 
 
 \begin{figure}[ht!]
