@@ -1,4 +1,5 @@
 Downloaded from: https://cal-adapt.org/data/loca/
-Min temp in Kelvin for a bounding box I drew online.
+Downloaded on 03/05/19 at 17:27 PST
+Min temp in Kelvin for a bounding box I drew online
 Minimum values from all 32 LOCA downscaled models 
 RCP 4.5
