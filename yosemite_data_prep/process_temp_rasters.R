@@ -332,7 +332,7 @@ for (lyr_num in 1:nlayers(tmp_lyrs)){
 ##################################################################
 ### STEP 11: Write both series of rasters to their own directories
 ##################################################################
-gnx_rast_dir = './geonomics_yosemite_lyrs/'
+gnx_rast_dir = './yosemite_lyrs/'
 tmp_dir = paste0(gnx_rast_dir, 'tmp/')
 sdm_dir = paste0(gnx_rast_dir, 'sdm/')
 for (lyr_num in 1:nlayers(SDM_lyrs)){
