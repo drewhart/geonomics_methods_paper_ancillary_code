@@ -1,0 +1,27 @@
+library(vegan)
+source('./MMRR.R')
+
+geo = as.matrix(read.table('./geo_dists.txt'))
+gen = as.matrix(read.table('./gen_dists.txt'))
+env = as.matrix(read.table('./env_dists.txt'))
+
+mant = mantel.partial(gen, env, geo)
+
+mmrr = MMRR(gen, list('env'=env, 'geo'=geo))
+
+print("MANTEL TEST")
+print("-----------")
+print('MANTEL STAT:')
+print(mant$statistic)
+print(' ')
+print('SIGNIF: ')
+print(mant$signif)
+print(' ')
+print(' ')
+print("MMRR TEST")
+print("-----------")
+print('COEFFS:')
+print(mmrr$coefficients)
+print(' ')
+print('SIGNIF:')
+print( mmrr$tpvalue)

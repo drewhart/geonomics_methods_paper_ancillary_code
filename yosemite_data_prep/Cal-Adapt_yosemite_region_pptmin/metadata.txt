@@ -1,0 +1,5 @@
+Downloaded from: https://cal-adapt.org/data/loca/
+Downloaded on 05/12/19 at 18:20 PST
+Min ppt in kg/m^2/s for a bounding box I drew online
+Minimum values from all 32 LOCA downscaled models 
+RCP 4.5
