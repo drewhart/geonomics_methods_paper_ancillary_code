@@ -24,16 +24,16 @@
 
 
 params = {
-###############################################################################
+#-----------------------------------------------------------------------------#
 
-###################
-#### LANDSCAPE ####
-###################
+#-----------------#
+#--- LANDSCAPE ---#
+#-----------------#
     'landscape': {
 
-    ##############
-    #### main ####
-    ##############
+    #------------#
+    #--- main ---#
+    #------------#
         'main': {
             #y,x (a.k.a. i,j) dimensions of the Landscape
             'dim':                      (8,8),
@@ -45,17 +45,17 @@ params = {
             'prj':                      None,
             }, # <END> 'main'
 
-    ################
-    #### layers ####
-    ################
+    #--------------#
+    #--- layers ---#
+    #--------------#
         'layers': {
 
             #layer name (LAYER NAMES MUST BE UNIQUE!)
             'lyr_0': {
 
-        #######################################
-        #### layer num. 0: init parameters ####
-        #######################################
+        #-------------------------------------#
+        #--- layer num. 0: init parameters ---#
+        #-------------------------------------#
 
                 #initiating parameters for this layer
                 'init': {
@@ -64,7 +64,7 @@ params = {
                     'file': {
                         #</path/to/file>.<ext>
                         'filepath': ('/home/drew/Desktop/stuff/berk/research/'
-                                     'projects/sim/methods_paper/movesurf_img/'
+                                     'projects/sim/methods_paper/make_movesurf_img/'
                                      'movesurf_lyr.txt'),
                         #minimum value to use to rescale the Layer to [0,1]
                         'scale_min_val':                None,
@@ -92,11 +92,11 @@ params = {
         }, # <END> 'landscape'
 
 
-###############################################################################
+#-----------------------------------------------------------------------------#
 
-###################
-#### COMMUNITY ####
-###################
+#-----------------#
+#--- COMMUNITY ---#
+#-----------------#
     'comm': {
 
         'species': {
@@ -104,9 +104,9 @@ params = {
             #species name (SPECIES NAMES MUST BE UNIQUE!)
             'spp_0': {
 
-            #####################################
-            #### spp num. 0: init parameters ####
-            #####################################
+            #-----------------------------------#
+            #--- spp num. 0: init parameters ---#
+            #-----------------------------------#
 
                 'init': {
                     #starting number of individs
@@ -117,9 +117,9 @@ params = {
                     'K_factor':         1,
                     }, # <END> 'init'
 
-            #######################################
-            #### spp num. 0: mating parameters ####
-            #######################################
+            #-------------------------------------#
+            #--- spp num. 0: mating parameters ---#
+            #-------------------------------------#
 
                 'mating'    : {
                     #age(s) at sexual maturity (if tuple, female first)
@@ -142,9 +142,9 @@ params = {
                     'mating_radius':            10,
                     }, # <END> 'mating'
 
-            ##########################################
-            #### spp num. 0: mortality parameters ####
-            ##########################################
+            #----------------------------------------#
+            #--- spp num. 0: mortality parameters ---#
+            #----------------------------------------#
 
                 'mortality'     : {
                     #maximum age
@@ -157,9 +157,9 @@ params = {
                     'density_grid_window_width':    None,
                     }, # <END> 'mortality'
 
-            #########################################
-            #### spp num. 0: movement parameters ####
-            #########################################
+            #---------------------------------------#
+            #--- spp num. 0: movement parameters ---#
+            #---------------------------------------#
 
                 'movement': {
                     #whether or not the species is mobile
@@ -169,13 +169,15 @@ params = {
                     #concentration of distr of movement direction
                     'direction_distr_kappa':    0,
                     #mean of distr of movement distance
-                    'distance_distr_mu':        0.25,
+                    'movement_distance_distr_param1':        0.25,
                     #variance of distr of movement distance
-                    'distance_distr_sigma':     0.25,
+                    'movement_distance_distr_param2':     0.25,
+                    'movement_distance_distr':     'wald',
                     #mean of distr of dispersal distance
-                    'dispersal_distr_mu':       0.25,
+                    'dispersal_distance_distr_param1':       0.25,
                     #variance of distr of dispersal distance
-                    'dispersal_distr_sigma':    0.25,
+                    'dispersal_distance_distr_param2':    0.25,
+                    'dispersal_distance_distr':   'wald',
                     'move_surf'     : {
                         #move-surf Layer name
                         'layer':                'lyr_0',
@@ -204,11 +206,11 @@ params = {
         }, # <END> 'comm'
 
 
-###############################################################################
+#-----------------------------------------------------------------------------#
 
-###############
-#### MODEL ####
-###############
+#-------------#
+#--- MODEL ---#
+#-------------#
     'model': {
         #total Model runtime (in timesteps)
         'T':            100,
@@ -216,10 +218,11 @@ params = {
         'burn_T':       30,
         #seed number
         'num':          None,
+        'tskit_simp_interval':  100,
 
-        ###############################
-        #### iterations parameters ####
-        ###############################
+        #-----------------------------#
+        #--- iterations parameters ---#
+        #-----------------------------#
         'its': {
             #num iterations
             'n_its':            1,

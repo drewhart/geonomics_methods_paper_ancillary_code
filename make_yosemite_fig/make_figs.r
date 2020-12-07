@@ -170,7 +170,11 @@ get_normed_stacks = function(b4, af){
 # will be scaled between minval and maxval, with the mean of those two
 # vals being used as the contour-line value)
 make_gg_hillshade_plot = function(rast, hillrast, display_name,
-                                  minval, maxval, cols, title){
+                                  minval, maxval, cols, title,
+                                  include_title=FALSE){
+  if (!include_title){
+      title=''
+  }
   # make both rasters into data.frames
   df = as.data.frame(rast, xy=T)
   hill_df = as.data.frame(hillrast, xy=T)
@@ -199,15 +203,27 @@ make_gg_hillshade_plot = function(rast, hillrast, display_name,
       theme(legend.position = 'right',
             legend.background = element_rect(fill = "darkgray"), 
             legend.key = element_rect(fill = "lightblue", color = NA),
-            legend.key.size = unit(1.5, "cm"), legend.key.width = unit(0.5,"cm"),
-            plot.title = element_text(size = 12),
+            #legend.key.size = unit(2, 'cm'),
+            #legend.key.height = unit(1.2, "cm"), #legend.key.width = unit(0.4,"cm"),
+            legend.text = element_text(size=14),
+            legend.title = element_text(size=16),
+            plot.title = element_text(size = 18),
+            axis.ticks.length = unit(0.2, 'cm'),
             #axis.title = element_text(),
-            axis.text = element_text(), axis.ticks = element_line()) +
+            plot.margin = unit(c(0,0,0,0), 'cm'),
+            axis.text = element_text(size=10), #, angle=45),
+            axis.ticks = element_line(),
+            axis.title.x = element_blank(),
+            axis.title.y = element_blank()) +
       #xlab("lon") +
       #ylab("lat") + 
       # add the title
       ggtitle(title) +
-      coord_quickmap()
+      # set to map coordinates, 
+      # and fix the x- and y-axis limits to remove the annoying margin
+      coord_quickmap(xlim = c(min(df$x), max(df$x)),
+                      ylim = c(min(df$y), max(df$y)),
+                      expand=F)
   return(out)
 }
 
@@ -344,25 +360,26 @@ n_breaks = 100
 #cols = coolwarm(n_breaks)
 cols = brewer.rdbu(n_breaks*1.5)[125:26]
 
-b4_tmp_hillplot = make_gg_hillshade_plot(b4[[2]], hill, 'tmp (°C)',
+b4_tmp_hillplot = make_gg_hillshade_plot(b4[[2]], hill, '°C     ',
                               b4[[2]]@data@min, af[[2]]@data@max,
                               cols, 'temperature before climate change')
-af_tmp_hillplot = make_gg_hillshade_plot(af[[2]], hill, 'tmp (°C)',
+af_tmp_hillplot = make_gg_hillshade_plot(af[[2]], hill, '°C     ',
                               b4[[2]]@data@min, af[[2]]@data@max,
                               cols, 'temperature after climate change')
-b4_z_hillplot = make_gg_hillshade_plot(b4_z, hill, '  z',
+b4_z_hillplot = make_gg_hillshade_plot(b4_z, hill, 'pheno\nval',
                               b4_z@data@min, af_z@data@max,
                               cols, 'phenotypes before climate change')
-af_z_hillplot = make_gg_hillshade_plot(af_z, hill, '  z',
+af_z_hillplot = make_gg_hillshade_plot(af_z, hill, 'pheno\nval',
                               b4_z@data@min, af_z@data@max,
                               cols, 'phenotypes after climate change')
 
 pg_tmp_z = plot_grid(b4_tmp_hillplot, af_tmp_hillplot,
-                     b4_z_hillplot, af_z_hillplot, ncol=2)
+                     b4_z_hillplot, af_z_hillplot,
+                     ncol=2)
 
 if (save_figs){
-  ggsave(pg_tmp_z, file='b4_af_tmp_z_plot.pdf',
-         width=35, height=20, units = "cm", dpi=500)
+  ggsave(pg_tmp_z, file='b4_af_tmp_z_maps.pdf',
+         width=30, height=20, units = "cm", dpi=1200)
 }
 
 
@@ -376,24 +393,26 @@ max_sdm_val = max(b4[[3]]@data@max, af[[3]]@data@max)
 min_kde_val = min(b4_kde@data@min, af_kde@data@min)
 max_kde_val = max(b4_kde@data@max, af_kde@data@max)
 
-b4_sdm_hillplot = make_gg_hillshade_plot(b4[[3]], hill, 'hab',
+b4_sdm_hillplot = make_gg_hillshade_plot(b4[[3]], hill, 'hab\nsuit',
                               min_sdm_val, max_sdm_val,
                               zissou, 'habitat suitability before climate change')
-af_sdm_hillplot = make_gg_hillshade_plot(af[[3]], hill, 'hab',
+af_sdm_hillplot = make_gg_hillshade_plot(af[[3]], hill, 'hab\nsuit',
                               min_sdm_val, max_sdm_val,
                               zissou, 'habitat suitability after climate change')
-b4_nt_hillplot = make_gg_hillshade_plot(b4_kde, hill, 'pop dens\n(ind/cell)',
+b4_nt_hillplot = make_gg_hillshade_plot(b4_kde, hill, 'inds/\ncell',
                               min_kde_val, max_kde_val,
                               zissou, 'population density before climate change')
-af_nt_hillplot = make_gg_hillshade_plot(af_kde, hill, 'pop dens\n(ind/cell)',
+af_nt_hillplot = make_gg_hillshade_plot(af_kde, hill, 'inds/\ncell',
                               min_kde_val, max_kde_val,
                               zissou, 'population density after climate change')
+
 pg_sdm_nt = plot_grid(b4_sdm_hillplot, af_sdm_hillplot,
-                      b4_nt_hillplot, af_nt_hillplot, ncol=2)
+                      b4_nt_hillplot, af_nt_hillplot,
+                      ncol=2)
 
 if (save_figs){
-  ggsave(pg_sdm_nt, file='b4_af_sdm_nt_plot.pdf',
-         width=35, height=20, units = "cm", dpi=500)
+  ggsave(pg_sdm_nt, file='b4_af_sdm_nt_maps.pdf',
+         width=30, height=20, units = "cm", dpi=1200)
 }
 
 
@@ -464,7 +483,8 @@ nt_plot = ggplot() +
     #scale_y_continuous(name = 'Nt (individuals/cell)', limits=ylims) + 
     ggthemes::theme_gdocs() +
     #ggtitle("Population dynamics") +
-    theme(axis.title = element_text(size=30), axis.text = element_text(size=25, color='black'))
+    theme(axis.title = element_text(size=30),
+          axis.text = element_text(size=28, color='black'))
 nt_plot
 
 ggsave(nt_plot, file='Nt_plot.pdf',
