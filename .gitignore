@@ -1,0 +1,11 @@
+./img/
+./*.png
+*.png
+*.tif
+./*.tif
+*.bil
+./*.bil
+*.zip
+./*.zip
+*.csv
+./*.csv
